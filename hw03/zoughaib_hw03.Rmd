@@ -26,6 +26,16 @@ ansc <-
   mutate(dataset=gsub("x","",dataset)) %>%
   as_tibble()
 ```
+```{r}
+ansc %>% 
+  group_by(dataset) %>% 
+  summarize(
+    mean_x=mean(x),
+    stdev_x=sd(x),
+    mean_y=mean(y),
+    stdev_y=sd(y)
+  )
+```
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
