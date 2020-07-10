@@ -8,6 +8,8 @@
   ---
 ```{r}
 library(tidyverse)
+library(knitr)
+library(xtable)
 ```
 ```{r}
 anscombe
@@ -36,6 +38,53 @@ ansc %>%
     stdev_y=sd(y)
   )
 ```
+###Part 3
+```{r}
+head(iris)
+```
+```{r}
+kable(head(iris), 
+      align= c("l", "c", "r", "c", "l"),
+      col.names = c("Sepal Length", "Sepal Width", "Sepal Length", "Sepal Width", "Species"))
+```
+```{r}
+head(airquality)
+```
+```{r}
+kable(head(airquality),
+      align = c("r","r","c","c","l","l"),
+      col.names = c("Ozone ppb","Solar R lang","Wind mph","Temp F","Month","Day"))
+```
+```{r}
+kable(chicks_lm)
+```
+There was an error in extracting the data to kable function.  It said,'Error in as.data.frame.default(x) : cannot coerce class ‘"lm"’ to a data.frame".
+```{r}
+xtable(chicks_lm) %>% kable()
+```
+```{r}
+xtable(trees_lm) %>% kable()
+```
+###Part 4 Equations
+$$\upsilon = \frac{d[P]}{dt} = \frac{V_{max}[S]}{K_M+[S]}$$
+[Link][1]
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1]:https://www.southernmarylandchronicle.com/2019/11/10/woman-yelling-at-cat-meme-takes-over-the-internet/
+
+
+
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
