@@ -76,8 +76,64 @@ ggplot(data=mpg)+
 ggplot(data=mpg)+
   geom_point(mapping=aes(x=displ,y=hwy,shape=class))
 ```
+#use color=blue in aes() 
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy),color="blue")
+```
+#### Section 3.3 Questions
+**1:** whats wrong with this code?  why is it red?
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy, color="blue"))
+```
+# i in fact made this mistake when i was reading the chapter itself.  To set an aesthetic, i need to type it outside of the aes() parantheses.  If not, ill just get the generic encoded color.
+**2:** what variables are categorical, what variables are continuous: use ?mpg
+```{r}
+?mpg
+```
+# categorical:manufacturer, model, trans, drv, fl, class;    continuous:displ, year, cyl, cty, hwy
+**3:** map a continuous variable( color for cyl, size=cyl, and shape=cyl)
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=cty, color=cyl))
+```
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=cty, size=cyl))
+```
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=cty,shape=cyl))
+```
+#attaching shape to a continuous variable results in an error.  ultimately, a continuous variable cannot be used with a shape.  Continuous variables can be used with color and size though.
+**4:** map the continuous variable from above with the multiple aesthetics 
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=cty, color=cyl, size=cyl))
+```
+#i ran color=cyl and size=cyl and the above graph was shown.  Thus it appears that more than one aethetic for a continuous variable can be attributed to a scatterplot graph.
+**5:** use stroke aesthetic and what shapes does it work with
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=cty,stroke=cyl))
+```
+#i do not like it as much as the size=cyl in the penultimate graph.  stroke=cyl works with circle shapes but it looks very blobby.  It shows a negative linear relationship but discerning a data pt is almost impossible.  
+**6:** map an aesthetic to something other than a variable name such as color=displ<5
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=cty,color=displ<5))
+```
+#this is pretty cool as adding it to the code chunk then provides boolean values of TRUE, FALSE.  If i chose to do this, it would help decrease the required data range
 
-#### Section 3.4 Questions
+
+###Section 3.5: Facets
+#use facet wrap on mpg data
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=cty))+
+  facet_wrap(~class, nrow=2)
+```
 
 
 
@@ -86,9 +142,3 @@ ggplot(data=mpg)+
 
 
 
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
