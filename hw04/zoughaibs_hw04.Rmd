@@ -144,6 +144,7 @@ ggplot(data=mpg)+
 ```
 ####3.5.1 Exercises
 **1:** What happens if a you facet on a continuous variable
+#it will run and only show the continuous variable above displ versus the hwy mpg
 ```{r}
 ggplot(data=mpg)+
   geom_point(mapping=aes(x=displ, y=hwy))+
@@ -404,6 +405,7 @@ ggplot(data=mpg,mapping=aes(x=class,y=hwy))+
 ```
 #cont. reading
 
+
 ###3.10:The layered grammar of graphics
-#read
+#cont. reading
 
