@@ -201,10 +201,210 @@ ggplot(data=mpg)+
 
 
 ###3.6 Geomteric Objects
+#use geom_smooth to plot mpg data
+```{r}
+ggplot(data=mpg)+
+  geom_smooth(mapping=aes(x=displ,y=hwy))
+```
+#add linetype to drv with above code chunk
+```{r}
+ggplot(data=mpg)+
+  geom_smooth(mapping=aes(x=displ,y=hwy,linetype=drv))
+```
+#add group=drv to original geom_smooth plot
+```{r}
+ggplot(data=mpg)+
+  geom_smooth(mapping=aes(x=displ,y=hwy,group=drv))
+```
+#repeat above code chunk but adding color=drv and show.legend=FALSE
+```{r}
+ggplot(data=mpg)+
+  geom_smooth(mapping=aes(x=displ,y=hwy,color=drv),show.legend = FALSE)
+```
+#add geom_point and geom_smooth to mpg scatter plot of displ v hwy
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping = aes(x=displ,y=hwy))+
+  geom_smooth(mapping = aes(x=displ,y=hwy))
+```
+#to save typing and have two geom plots, add mapping =aes(x=displ,y=hwy) to ggplot(data=mpg,) code chunk
+```{r}
+ggplot(data=mpg,mapping = aes(x=displ,y=hwy))+
+  geom_point()+
+  geom_smooth()
+```
+#apply color aesthetic to geom_point only while leaving geom_smooth normal
+```{r}
+ggplot(data=mpg,mapping=aes(x=displ,y=hwy))+
+  geom_point(mapping=aes(color=class))+
+  geom_smooth()
+```
+#repeat above code chunk but adding in geom_smooth by selecting subcompact cars for class and using mpg to filter
+```{r}
+ggplot(data=mpg,mapping=aes(x=displ,y=hwy))+
+  geom_point(mapping=aes(color=class))+
+  geom_smooth(data=filter(mpg,class=="subcompact"),se=FALSE)
+```
+####3.6.1 Exercises
+**1:** determine geom_ for line chart, boxplot,histogram,area chart
+# respectively the answers are geom_line, geom_boxplot, geom_histogram, geom_area
+**2:**
+#It will show points on the graph but in the geom_smooth, the se will override the global data and just show curved lines
+```{r}
+ggplot(data=mpg,mapping=aes(x=displ,y=hwy,color=drv))+
+  geom_point()+
+  geom_smooth(se=FALSE)
+```
+**3:** what does show.legend=FALSE do? what happens if you remove it.  copy original data chunk that had show.legend but remove it
+```{r}
+ggplot(data=mpg)+
+  geom_smooth(mapping=aes(x=displ,y=hwy,color=drv))
+```
+#show.legend=FALSE removes the legend key to the left of the smooth data plot.  By removingshow.legend=false, you restore the original argument that show.legend=TRUE thus the legend will appear.  It was used to show the complete functionality of the geom_smooth function.  When adding the color aesthetic to a variable, it is useful to know which color matches what attribute of that specific variable thus a legend is usually required
+**4:** what does se do in geom_smooth
+#it overwrites the ggplot data overall data and only selects the geom_smooth data we wish to see.  
+**5:**will these two graphs look different? 
+#No, they will be the same. when plugging in the mappings to ggplot(data=mpg,mapping....) it overwrites what mapping of the data we need in the geom_smooth and geom_point chunks.  by plugging in mapping into ggplot (we have to use the same x,y variables), we avoid needless extra typing
+**6:** 
+#1:upper left
+```{r}
+ggplot(data=mpg, mapping = aes(x=displ,y=hwy))+
+  geom_point()+
+  geom_smooth(se=FALSE)
+```
+#2:upper right
+```{r}
+ggplot(data=mpg,mapping = aes(x=displ,y=hwy,group=drv))+
+  geom_point()+
+  geom_smooth(se=FALSE)
+```
+#3:middle left
+```{r}
+ggplot(data=mpg,mapping=aes(x=displ,y=hwy,color=drv))+
+  geom_point()+
+  geom_smooth(se=FALSE)
+```
+#4:middle right
+```{r}
+ggplot(data=mpg, mapping = aes(x=displ,y=hwy))+
+  geom_point(mapping=aes(color=drv))+
+  geom_smooth(se=FALSE)
+```
+#5:lower left
+```{r}
+ggplot(data=mpg,mapping=aes(x=displ,y=hwy))+
+  geom_point(mapping=aes(color=drv))+
+  geom_smooth(mapping=aes(linetype=drv),se=FALSE)
+```
+#6:lower right
+```{r}
+?geom_point
+```
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy,fill=drv),shape=21,stroke=2,size=3,color="white")
+```
 
 
+###Section 3.8 Position Adjustments
+#run geom_bar and provide color aesthetic and use fill=cut
+```{r}
+ggplot(data=diamonds)+
+  geom_bar(mapping=aes(x=cut,color=cut))
+```
+```{r}
+ggplot(data=diamonds)+
+  geom_bar(mapping=aes(x=cut,fill=cut))
+```
+#run fill=clarity with above code chunk by replacing fill=cut
+```{r}
+ggplot(data=diamonds)+
+  geom_bar(mapping = aes(x=cut,fill=clarity))
+```
+#run alpha=1/5 with position="identity" in geom_bar chunk by using ggplot(data=diamonds,mapping=aes(x=cut,fill=clarity))
+```{r}
+ggplot(data=diamonds,mapping=aes(x=cut,fill=clarity))+
+  geom_bar(alpha=1/5,position="identity")
+```
+#repeat above step but replace alpha=1/5 with fill=NA and color=clarity
+```{r}
+ggplot(data=diamonds,mapping=aes(x=cut,color=clarity))+
+  geom_bar(fill=NA,position="identity")
+```
+#run position="fill" to place overlapping objects right next to each other
+```{r}
+ggplot(data=diamonds)+
+  geom_bar(mapping=aes(x=cut,fill=clarity),position="fill")
+```
+#run position="dodge" by replacing position="fill" as in the above code chunk which runs overlapping objects right next to each other
+```{r}
+ggplot(data=diamonds)+
+  geom_bar(mapping=aes(x=cut,fill=clarity),position="dodge")
+```
+#in original mpg plot of displ v hwy mpg data, only 109 d.p. were shown.  Use position="jitter" to show all data points
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy),position="jitter")
+```
+####3.8.1 Exercises
+**1:** run the plot and what is the problem with it?  TO fix it, run geom_jitter
+```{r}
+ggplot(data=mpg,mapping=aes(x=cty,y=hwy))+
+  geom_point()
+```
+```{r}
+ggplot(data=mpg)+
+  geom_jitter(mapping=aes(x=cty,y=hwy))
+```
+#It is missing alot of the data if we kept the original plot.  Using geom_jitter mapping, we can see all the data points for the 234 cars
+**2:** what parameters to geom_jitter control jittering amount
+```{r}
+?geom_jitter
+```
+#it overwrites the tidy plot data if we just did geom_point(mapping=aes(x=cty,y=hwy)) and shows all points.  width, height, position are the parameters
+**3:**Compare and contrast geom_jitter with geom_count
+```{r}
+ggplot(data=mpg)+
+  geom_jitter(mapping=aes(x=cty,y=hwy))
+```
+```{r}
+ggplot(data=mpg)+
+  geom_count(mapping=aes(x=cty,y=hwy))
+```
+```{r}
+?geom_count
+```
+# geom_count has a legend attached.  It also has dots that vary in size according the data point that falls there (how many objects fit the x,y data point, how many observations are there at each location).  Geom_count and geom_jitter are similar in that they have a positive linear relationship. They can both be used with overplotting and they both can use aesthetics such as color, fill, shape, etc. 
+**4:**what is the default position adjustment for geom_boxplot.  show the mpg dataset that portrays it by running position=: "dodge" versus "dodge2"
+```{r}
+?geom_boxplot
+```
+# the default position is "dodge2"
+```{r}
+ggplot(data=mpg)+
+  geom_boxplot(mapping=aes(x=drv,y=hwy),position="dodge")
+```
+```{r}
+ggplot(data=mpg)+
+  geom_boxplot(mapping=aes(x=drv,y=hwy),position="dodge2")
+```
+#here is the boxplot for it
 
 
+###Section 3.9: Coordinate Systems
+#run geom_boxplot for class v hwy mpg data; then run with coord_flip()
+```{r}
+ggplot(data=mpg,mapping=aes(x=class,y=hwy))+
+  geom_boxplot()
+```
+```{r}
+ggplot(data=mpg,mapping=aes(x=class,y=hwy))+
+  geom_boxplot()+
+  coord_flip()
+```
+#cont. reading
 
+###3.10:The layered grammar of graphics
+#read
 
 
