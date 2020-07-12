@@ -407,4 +407,3 @@ ggplot(data=mpg,mapping=aes(x=class,y=hwy))+
 ###3.10:The layered grammar of graphics
 #read
 
-
