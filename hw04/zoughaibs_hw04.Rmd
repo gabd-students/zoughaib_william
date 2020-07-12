@@ -102,10 +102,6 @@ ggplot(data=mpg)+
 ggplot(data=mpg)+
   geom_point(mapping=aes(x=displ, y=cty, size=cyl))
 ```
-```{r}
-ggplot(data=mpg)+
-  geom_point(mapping=aes(x=displ, y=cty,shape=cyl))
-```
 #attaching shape to a continuous variable results in an error.  ultimately, a continuous variable cannot be used with a shape.  Continuous variables can be used with color and size though.
 **4:** map the continuous variable from above with the multiple aesthetics 
 ```{r}
@@ -131,10 +127,80 @@ ggplot(data=mpg)+
 #use facet wrap on mpg data
 ```{r}
 ggplot(data=mpg)+
-  geom_point(mapping=aes(x=displ, y=cty))+
+  geom_point(mapping=aes(x=displ, y=hwy))+
   facet_wrap(~class, nrow=2)
 ```
+#run facet grid on mpg data
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=hwy))+
+  facet_grid(drv~cyl)
+```
+#run a period instead of a variable name
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=hwy))+
+  facet_grid(.~cyl)
+```
+####3.5.1 Exercises
+**1:** What happens if a you facet on a continuous variable
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=hwy))+
+  facet_wrap(~year,nrow=2)
+```
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=hwy))+
+  facet_wrap(~displ,nrow=2)
+```
+#i have run two different code chunks with continuous variables and it still works
+**2:** what do the empty cells in code chunk w/ facet_grid(drv~cyl) mean; how does it relate to the following code chunk
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ, y=hwy))+
+  facet_grid(drv~cyl)
+```
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=drv, y=cyl))
+```
+#it is telling us that there are 0 cars with 4 cylinders and rear wheel drive; it is also telling us there are 0 cars with either 5 cylinder & 4 wheel drive, 5 cylinder & rear wheel drive
+**3:**what plots do the following code chunks make.  what does the . do
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy))+
+  facet_grid(drv~.)
+```
+#the . eliminates column data and only shows the extra row data represented by drive train along with the hwy and displ variables
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy))
+facet_grid(. ~ cyl)
+```
+#this plot looks very similar to ggplot(data=mpg)+geom_point(mapping=aes(x=displ, y=hwy)) code chunk if it isnt the same.  Apparently my continuous variable cyl is not shown.  
+**4:** take the first faceted plot we did above and determine the advantages and disadvantages of it.  how might the balance change
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy))+
+  facet_wrap(~class,nrow=2)
+```
+#Instead of trying to determine the different colors using color aesthetics, facet_wrap simplifies the different classes into their own scatterplot.  It is easier to read when trying to highlight a specific portion of the mpg dataset.  But the color aesthetic has it uses when looking at something on a grand scale where we are just trying to determine the overall linear relationship.  You cannot determine the overall linear relationship using facet_wrap ie 2seater and minivan classes.  Larger dataset would be more useful with the color aesthetic as we can look at the overall picture better than with the facet_wrap.  If we wanted to of course obtain a specific part of the larger data set, then we can use facet_wrap
+**5:** read ?facet_wrap.  what does nrow and ncol do.  what other options are there to control the layout.  Why doesnt facet_grid have nrow and ncol arguments
+```{r}
+?facet_wrap
+```
+#it offers a better screen space than facet_grid.  we can compare each categorical variable to each other much better with facet_wrap. nrow= number of desired rows, ncol = number of desired columns.  These include as.table, switch, dir, shrink, scales, drop, strip.position)
+**6:** why should you put the variable with more unique levels in the columns with facet_grid?
+```{r}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy))+
+  facet_grid(drv~cyl)
+```
+# i do not know why?  is it because people like reading horizontally?  More columns helps the eyes when reading from left to right...also do not have to scroll as much.  So the column variable should have more unique variables than the row variable.  
 
+
+###3.6 Geomteric Objects
 
 
 
