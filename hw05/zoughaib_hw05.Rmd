@@ -1,0 +1,166 @@
+---
+title: "HW04 Part 2: Hw05 Data Visualization"
+author: "William Zoughaib"
+date: "r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options:
+  chunk_output_type: inline 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE)
+```
+###William Zoughaib
+###Chapter 3 Part 2 Plots (1:10)
+
+```{r}
+library(tidyverse)
+```
+```{r}
+library(ggplot2)
+```
+####Plot 1
+```{r}
+data(trees)
+```
+```{r}
+?trees
+```
+```{r}
+ggplot(data = trees, aes(x = Height, y = Girth)) +
+  geom_point()
+```
+#using case matters, could not figure out why x=height,y=girth was not working.  I forgot to capitilize the first letter of each name.  Stupid.  There appears to be a positive linear relationship.  
+
+
+####Plot 2
+```{r}
+year <- (1821:1934)
+```
+```{r}
+year
+```
+```{r}
+data("lynx")
+```
+```{r}
+?lynx
+```
+```{r}
+class(lynx)
+```
+```{r}
+pelts <- as.vector(lynx)
+```
+```{r}
+pelts
+```
+```{r}
+lynx_pelts <- data.frame(year,pelts)
+```
+```{r}
+lynx_pelts
+```
+```{r}
+ggplot(data=lynx_pelts)+
+  geom_line(mapping=aes(x=year,y=pelts),color="maroon")
+```
+#it appears to be a pointed sine wave.  this indicates that there are peaks and lows to pelt collection in the lynx_data set.  time series data apparently are notorious for this when I googled it
+
+
+```{r}
+data(iris)
+```
+```{r}
+?iris
+```
+```{r}
+?labs
+```
+```{r}
+ggplot(data=iris)+
+  geom_point(mapping=aes(x=Petal.Length,y=Petal.Width,shape=Species,color=Species))+
+  labs(x="Petal Length",y="Petal Width")
+```
+#the data shows that each iris species has its own range for petal length versus petal width.  This can help distinguish between iris species when looking at a random iris
+
+
+####Plot 4
+```{r}
+data(msleep)
+```
+```{r}
+?msleep
+```
+```{r}
+ggplot(data=msleep)+
+  geom_violin(mapping = aes(x=vore,y=sleep_rem),fill="grey30")
+```
+####Plot 5
+```{r}
+ggplot(data=msleep)+
+  geom_violin(mapping = aes(x=vore,y=sleep_rem),fill="grey70")
+``` 
+#grey70 (plot 5) is a much lighter grey than grey30 (plot 4) which has a darker tone.  The 5 different variables look almost like a boxplot.  They appear to be a like a vase.  Looking at google, they are similar in that of a boxplot except for the fact that it also includes probability density.  it has a rotated kernel density plot on each side which makes it more specific than a boxplot
+
+
+####Plot 7
+```{r}
+ggplot(data=msleep)+
+  geom_boxplot(mapping=aes(x=order,y=sleep_total))+
+  coord_flip()
+```
+#when comparing 19 orders to each other over their total sleep, the data shows that there are few similarities in sleep time when comparing two orders.  Some orders only require around 3.5-4 hrs of sleep while another may require 17 hrs of sleep.  there are 19 boxplots in total with some min and even maxs not appearing.  There are even outliers to the boxplot (kinda rare if I am correct)
+
+####Plot 8
+```{r}
+?labs
+```
+```{r}
+ggplot(data=msleep,mapping=aes(x=conservation,y=awake,color=conservation))+
+  geom_boxplot()+
+  geom_point()+
+  geom_jitter()+
+  labs(x="Conservation",y="Awake",color="Conservation")
+```
+```{r}
+ggplot(data=msleep,mapping=aes(x=conservation,y=awake,color=conservation))+
+  geom_boxplot()+
+  geom_point()+
+  geom_jitter()+
+  labs(x="Conservation",y="Awake",color="Conservation")+
+  coord_flip()
+```
+#i prefer coord_flip with the code chunk.  Much prettier and easier tor ead.  For the 7 conservation variables, they are each represented by a different boxplot for total awake time.  Interestingly, the min and max are not represented in all the boxplots.  A couple boxplots have outliers.  
+
+
+####Plot 9:sleep_total v bodywt with nominal=conservation
+```{r}
+?msleep
+```
+```{r}
+ggplot(data=msleep)+
+  geom_point(mapping = aes(x=sleep_total,y=bodywt,color=conservation))
+```
+```{r}
+ggplot(data=msleep)+
+  geom_point(mapping = aes(x=sleep_total,y=bodywt),color="coral")+
+  facet_wrap(~conservation,ncol=2)
+```
+#there are not any really clear trends where a certain body weight requires this much sleep_total.  When adding a nominal variable(conservation), there is not any direct observable trend.  While you can pick out one data pt and infer info about it, you cannot make a judgement about overall what the data implies.  All you can say is, sleep_total varies across all organisms
+
+
+####Plot 10
+```{r}
+ggplot(data=msleep)+
+  geom_point(mapping = aes(x=sleep_total,y=brainwt,color=vore))
+```
+```{r}
+ggplot(data=msleep)+
+  geom_point(mapping = aes(x=sleep_total,y=brainwt),color="coral")+
+  facet_wrap(~vore,ncol=2)
+```
+#i liked this data set better than plot 9.  You can actually see that most herbivores require less sleep than omnivores and carnivores (possibly due to predation, staying awake longer will help you spot the predator more often).  Some herbivores are outliers to the data or did not need to fear attack, ie maybe a cow, rhino, hippo, etc.  also noted is that herbivores had the largest range for sleep.  brainwt does not really affect sleep_total
+
+
+###THE END
