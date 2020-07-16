@@ -283,6 +283,10 @@ Read [R4ds Chapter 12: Tidy Data](https://r4ds.had.co.nz/tidy-data.html), sectio
 ### 12.1 Introduction
 
 Nothing to do here unless you took a break and need to reload the `tidyverse.`
+```{r}
+library(tidyverse)
+```
+
 
 ### 12.2 Tidy data
 
@@ -293,6 +297,36 @@ You do not have to run any of the examples in this section.
 ### 12.3
 
 Read and run the examples through section 12.3.1 (gathering), including the example with `left_join()`. We'll cover joins later.
+```{r}
+table4a
+```
+```{r}
+table4a %>% 
+  pivot_longer(c(`1999`,`2000`),names_to="year",values_to="cases")
+```
+```{r}
+?table4b 
+```
+```{r}
+table4b
+```
+```{r}
+table4b %>% 
+  pivot_longer(c(`1999`,`2000`),names_to="year",values_to="population")
+```
+```{r}
+tidy4a <- table4a %>% 
+  pivot_longer(c(`1999`,`2000`),names_to="year",values_to="cases")
+```
+```{r}
+tidy4b <- table4b %>% 
+  pivot_longer(c(`1999`,`2000`),names_to="year",values_to="population")
+```
+```{r}
+left_join(tidy4a,tidy4b)
+```
+
+
 
 #### 12.3 Questions
 
@@ -300,8 +334,9 @@ Read and run the examples through section 12.3.1 (gathering), including the exam
 
 ```{r}
 table4a %>% 
-  gather(1999, 2000, key = "year", value = "cases")
+  gather(`1999`, `2000`, key = "year", value = "cases")
 #> Error in inds_combine(.vars, ind_list): Position must be between 0 and n
+# added in backticks for years 1999 and 2000.  Can run the code now.  
 ```
 
 That is all for Chapter 12. On to the last chapter.
