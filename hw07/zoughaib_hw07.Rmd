@@ -1,0 +1,74 @@
+---
+title: "HW07 Data Importing and Wrangling"
+author: "William Zoughaib"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+install.packages("here")
+```
+```{r}
+library(tidyverse)
+library(here)
+```
+```{r}
+library(ggplot2)
+```
+
+
+###Assignment 1: **Limpets**
+```{r}
+limpets_data <- read_csv(here("data","limpets.csv"),col_types="ncc")
+```
+```{r}
+limpets_data
+```
+####Are the data tidy?
+```{r}
+as_tibble(limpets_data)
+# tidying the data
+# data is the same as previous code chunk so data is tidy
+```
+####Set col_types argument to numeric,character,and character
+```{r}
+# col_types have already been set to numeric, character,character
+```
+
+
+####Make sites column an ordered factor
+```{r}
+?factor
+```
+```{r}
+limpets_data$Site <- factor(limpets_data$Site,levels=c("PBL","KNRM","VBG","WP","PF","DP","SIO","CTZ1","CTZ2","CNM"),ordered=TRUE)
+```
+```{r}
+limpets_data
+```
+
+
+
+####Create a boxplot for limpets data
+```{r}
+?labs
+```
+```{r}
+ggplot(data=limpets_data)+
+  geom_boxplot(mapping=aes(x=Length,y=Site,color=Protected))+labs(x="Length (mm)")+
+  labs()
+```
+#### DP and WP are the only two boxplots with outliers.  It can be observed that protected sites have larger limpets that unprotected sites.  
+
+
+###Assignment 2: **Roseate Terns**
+```{r}
+
+```
+
+
