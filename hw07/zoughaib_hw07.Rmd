@@ -180,6 +180,79 @@ ggplot(data=abalone_clean)+
 
 
 ###Assignment 4: Darters
+```{r}
+?read_fwf
+```
+```{r}
+library(tidyverse)
+```
+####Load darters data.  Assign Column names. Make Riffle an unordered factor while Maj_Type is an ordered factor
+```{r}
+darters_data <- read_fwf(here("data", "darter.txt"), fwf_widths(c(3, 11, 1, 1, 1, 3, 4, 4, 4, 3, 3, 2, 2)), comment = '#')
+darters_named <- darters_data %>% rename(ID=X1,Species=X2,Riffle=X3,Age=X4,Sex=X5,Length=X6,Depth=X7,Velocity=X8,Temperature=X9,Maj_Sub=X10,Min_Sub=X11,Maj_Type=X12,Min_Type=X13)
+darters_named$Riffle <- factor(darters_named$Riffle,levels=c('1','2'))
+darters_named$Maj_Type <- factor(darters_named$Maj_Type,levels=c('s','fg','sg','lg','c'),ordered=TRUE)
+```
+```{r}
+darters_data
+# without any of the above corrections.
+```
+```{r}
+darters_named
+# checking to see that column names were changed. Ordered and factor were added to Maj_Type and Riffle respectively
+```
+
+
+
+
+
+
+#### Using pipe, filter out "zonale" & "tetrazonum".  Remove mintype and minsub columns.  Rename Maj_Sub and Maj_Type to Major_substrate and Major_type respectively.  Arrange data by id.  
+```{r}
+darters_tidy <- darters_named %>% 
+  filter(Species=="blennioides"|Species=="caeruleum"|Species=="spectabile") %>% 
+  rename(
+    Major_Substrate = Maj_Sub,
+    Major_Type = Maj_Type) 
+select(darters_tidy,-(c(Min_Type,Min_Sub))) %>% 
+  arrange(darters_tidy,ID) %>% 
+  drop_na()
+# I think i did it?  I now have 119 rows of data only corresponding to the IDs.  Then I did drop_na and I removed one extra row.   
+```
+
+
+#### Graph 3 plots using Riffles.  Plot 1: depth v length (Species= color & shape).  Plot 2: Boxplot of species v length.  Which riffle shows the greatest number of outliers.  Plot 3Boxplot of length for major substrate types for each species for each riffle.  Six plots in one!
+```{r}
+ggplot(darters_tidy)+
+  geom_point(mapping=aes(x=Depth,y=Length,color=Species,shape=Species))+
+  facet_wrap(~Riffle,ncol=2)
+####There are fewer blennioides in the first riffle compared to the second.  The first riffle has greater depth overall while the second riffle has long length.  
+```
+
+
+```{r}
+ggplot(data=darters_tidy)+
+  geom_boxplot(mapping=aes(x=Species,y=Length))+
+  facet_wrap(~Riffle,ncol=2)
+# riffle 2 has more outliers than riffle 1
+```
+```{r}
+ggplot(data=darters_tidy)+
+  geom_boxplot(mapping=aes(x=Major_Substrate,y=Length))+
+  facet_grid(Species~Riffle)
+# this looks right but I do not understand the triangle warning sign?
+```
+```{r}
+ggplot(data=darters_tidy)+
+  geom_boxplot(mapping=aes(x=Major_Substrate,y=Length))+
+  facet_grid(Riffle~Species)
+# This looks nicer as I can compare each species to what riffle it was in.  Riffle 2 again shows more outliers.  
+```
+
+
+
+###THE END
+
 
 
 
