@@ -14,6 +14,10 @@ knitr::opts_chunk$set(echo = TRUE)
 install.packages("here")
 ```
 ```{r}
+library(ggplot2)
+```
+
+```{r}
 library(tidyverse)
 library(here)
 ```
@@ -66,9 +70,82 @@ ggplot(data=limpets_data)+
 #### DP and WP are the only two boxplots with outliers.  It can be observed that protected sites have larger limpets that unprotected sites.  
 
 
-###Assignment 2: **Roseate Terns**
+####Assignment 2: **Roseate Terns**
 ```{r}
-
+library("tidyverse")
 ```
+```{r}
+?read_tsv
+```
+```{r}
+terns_data <- read_tsv(here("data","roseate_terns.txt"))
+# using read_tsv instead of read_csv
+```
+```{r}
+terns_data
+```
+
+
+####Tidy the data
+```{r}
+tidy_terns <- terns_data %>% pivot_longer(c(AR:JC),names_to="Site",values_to="Population")
+# remember to use the %>% function as it is very very useful.  Also, syntactic words do not get ` `.  
+```
+```{r}
+tidy_terns
+```
+
+
+####Filter out missing Counts
+```{r}
+?filter
+```
+```{r}
+terns_filtered <- filter(drop_na(tidy_terns))
+```
+```{r}
+terns_filtered
+```
+
+
+
+####Create a Line Plot of population size over time
+```{r}
+ggplot(data=terns_filtered)+
+  geom_line(mapping=aes(x=Population,y=year,color=Site))+
+  labs(y="Year")
+```
+#### Sites AR,BC,JC obviously increased over time.  Site JR and BR had obvious sharp decreases in population but it appears that there is a population resurge.  Some of the others are really hard to read.  But in one example, (AR), it appears that it was introduced into that site around 1995 whie otheres were introduced earlier.  Some species may have been wiped out as well.  This would contribute to breaks.  
+
+
+
+###Assignment 3: Blacklip Abalone
+#### Chunk 1: import abolone data, remove first column, and make a boxplot of height differences
+```{r}
+abalone_data <- read_csv(here("data","abalone.csv"))
+select(abalone_data,-(X1))
+ggplot(data=abalone_data)+
+  geom_boxplot(mapping=aes(x=Height,y=Type))
+
+# using read_csv, then selecting against X1 column, then creating a boxplot by using Height v Type (originally used height v type)
+```
+#### Chunk 2: create a scatterplot to see if height correlates with rings
+```{r}
+ggplot(data=abalone_data)+
+  geom_point(mapping=aes(x=Rings,y=Height))
+# using geom_point to graph RIngs v height
+```
+#### There is a general increase in height as there are more rings.  But the two outliers are not explained by it as the rings are <10.  
+
+
+#### Chunk 3: Filter out the outliers.  Remove the two large indivuals.  Change Type to an ordered factor.  Immatures are first.  Redo the scatterplot
+```{r}
+abalone_clean <- filter(abalone_data,Height<=0.4)
+factor(abalone_clean$Type,levels=c('I','F','M'))
+ggplot(data=abalone_clean)+
+  geom_point(mapping=aes(x=Height,y=Rings,color=Type))
+```
+#### Immature ones are found in the lower right area thus they are smaller in height and have fewer rings.  Makes perfect sense.  Males and females appear to be equally dispersed for the most part.  There are a couple outliers where a few females and males are smaller than immature ones.  The same goes for immature ones where they are found among large male and females.  
+
 
 
