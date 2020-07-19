@@ -70,7 +70,7 @@ ggplot(data=limpets_data)+
 #### DP and WP are the only two boxplots with outliers.  It can be observed that protected sites have larger limpets that unprotected sites.  
 
 
-####Assignment 2: **Roseate Terns**
+###Assignment 2: **Roseate Terns**
 ```{r}
 library("tidyverse")
 ```
@@ -146,6 +146,40 @@ ggplot(data=abalone_clean)+
   geom_point(mapping=aes(x=Height,y=Rings,color=Type))
 ```
 #### Immature ones are found in the lower right area thus they are smaller in height and have fewer rings.  Makes perfect sense.  Males and females appear to be equally dispersed for the most part.  There are a couple outliers where a few females and males are smaller than immature ones.  The same goes for immature ones where they are found among large male and females.  
+
+
+#### Chunk 4: Select the individuals with zero height and assign them an NA value.  Redo scatterplot
+```{r}
+abalone_clean[abalone_clean$Height == 0, 'Height'] 
+ggplot(data=abalone_clean)+
+  geom_point(mapping = aes(x=Height,y=Rings,color=Type))
+# I think this is the correct way
+```
+```{r}
+is.na <- filter(abalone_data,Height==0)
+ggplot(data=abalone_clean)+
+  geom_point(mapping=aes(x=Height,y=Rings,color=Type))
+# this is the same scatterplot as above except that I filtered it out.  
+```
+  
+
+#### Chunk 5: Create two different scatterplots of continuous variables.  Use color and/or shape.
+```{r}
+abalone_clean
+```
+```{r}
+ggplot(data=abalone_clean)+
+  geom_point(mapping=aes(x=LongestShell,y=ShellWeight,color=Type,shape=Type))
+```
+#### In here we have a curve in the data.  Immatures will have the lower ShellWeight v. LongestShell versus their Female and Male counterparts.  
+```{r}
+ggplot(data=abalone_clean)+
+  geom_point(mapping=aes(x=Rings,y=Diameter,color=Type,shape=Type))
+```
+####Interestingly, Diameter is greatest for male and female at around 10-12 rings.  Then there is a slight decrease in diameter as rings are added.  Again immatures will have a smaller ratio of Rings to Diameter than the adult counterparts.  
+
+
+###Assignment 4: Darters
 
 
 
