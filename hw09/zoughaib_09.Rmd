@@ -1,0 +1,43 @@
+---
+title: "HW 08: More Data Wrangling"
+author: "William Zoughaib"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(tidyverse)
+library(here)
+library(knitr)
+library(smatr)
+```
+```{r}
+source(here("scripts","my_functions.R"))
+```
+
+
+### **Darters in Riffles**
+***
+#### Import data, filter out tetrazonum & zonale
+```{r}
+darters_data <- read_csv(here("data","darters.csv"))
+darters_filtered <- darters_data %>% 
+  filter(species=="blennioides"|species=="caeruleum"|species=="spectabile")
+darters_filtered
+```
+#### Wrangle data.  Use Mutate to change Riffle values, centimeter values, create total_substrate column, change f & m to female and male
+```{r}
+mutate(darters_filtered,total_substrate=majsub+minsub) %>% 
+  mutate(riffle = ifelse(riffle == "1", 
+                             "Riffle 1", 
+                             "Riffle 2")) %>% 
+  mutate(length=length*10) %>% 
+  mutate(sex=ifelse(sex=="m","Male","Female"))
+# all values under total_substrate = 1
+```
+
+
