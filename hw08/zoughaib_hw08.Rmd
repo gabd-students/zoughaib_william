@@ -1,0 +1,153 @@
+---
+title: "HW 08: More Data Wrangling"
+author: "William Zoughaib"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+- Change "your name" in the YAML header above to your name.
+
+- As usual, enter the examples in code chunks and run them, unless told otherwise.
+
+
+
+## Chapter 5: Data transformation
+
+Read [R4ds Chapter 5: Data transformation](https://r4ds.had.co.nz/transform.html), sections 5-7.
+
+**You do not answer any of the questions this week.** Just read and run all of the examples as noted below. Pay attention to the code you enter for the examples. You will be applying the information in future assignments.
+
+### Section 5.5: Add new variables with `mutate()`
+
+Type and run all of the examples.
+
+Pay careful attention to the useful creation functions in section 5.5.1. 
+#### Running mutate() 
+```{r}
+flights_sml <- select(flights,year:day,ends_with("delay"),distance,air_time)
+mutate(flights_sml,gain=dep_delay-arr_delay,speed=distance/air_time*60)
+# by running this code, i added year:day columns, dep_delay,arr_delay, distance & air_time.  By using mutate function, i then created columns gain and speed.  
+```
+```{r}
+mutate(flights_sml,gain=dep_delay-arr_delay,hours=air_time/60,gain_per_hour=gain/hours)
+# By using the flights_sml vector, i then confirmed gain, determined hours of flight.  I could now use these columns to determine gain per hour.  
+```
+#### Running transmute ()
+```{r}
+transmute(flights,gain=dep_delay-arr_delay,hours=air_time/60,gain_per_hour=gain/hours)
+# transmute function only keeps the columns I want created.
+```
+```{r}
+transmute(flights,dep_time,hour=dep_time%/%100,minute=dep_time%%100)
+# By using %/% and %% I was able to break down the dep_time into the specific number of hours and the specific number of minutes
+```
+
+
+
+
+### Section 5.6: Grouped summaries with `summarise()`
+
+Read and run all of the examples. Pay careful attention to the useful summary functions. Unless you really like baseball, skip the baseball part of 5.6.3.
+#### Using summarise()
+```{r}
+summarise(flights,delay=mean(dep_delay,na.rm=TRUE))
+# obtaining mean of dep_delay
+```
+```{r}
+by_day <- group_by(flights,year,month,day)
+summarise(by_day,delay=mean(dep_delay,na.rm=TRUE),.groups = 'drop')
+# obtaining the mean of dep_delay on each day for 365 days
+```
+#### Using group_by and summarise together to make better data interpretation
+```{r}
+by_dest <- group_by(flights, dest)
+delay <- summarise(by_dest,
+   count = n(),
+   dist = mean(distance, na.rm = TRUE),
+   delay = mean(arr_delay, na.rm = TRUE),.groups='drop')
+delay <- filter(delay,count>20,dest!="HNL")
+ggplot(data=delay,mapping=aes(x=dist,y=delay))+
+  geom_point(aes(size=count),alpha=1/3)+
+  geom_smooth(se=FALSE)
+# Apparently there is an increase in delay as flights get longer around up to 750 miles.  There is a decrease in delay though past the 750 mile point.  
+```
+```{r}
+delay
+```
+
+#### Using pipes to do what I did above
+```{r}
+delays <- flights %>% 
+  group_by(dest) %>% 
+  summarise(
+    count=n(),
+    dist=mean(distance,na.rm=TRUE),
+    delay=mean(arr_delay,na.rm=TRUE),.groups='drop') %>%
+filter(count>20,dest!="HNL")
+```
+```{r}
+delays
+# Same thing as previous code chunk but word delays instead of delay.  %>% is so much easier.  
+```
+#### Removing na.rm argument
+```{r}
+flights %>% 
+  group_by(year,month,day) %>% 
+  summarise(mean=mean(dep_delay))
+# mean column is missing all the critical data!!!
+```
+```{r}
+flights %>% 
+  group_by(year,month,day) %>% 
+  summarise(mean=mean(dep_delay,na.rm=TRUE))
+# much nicer now when using na.rm argument
+```
+####Removing missing values which equal cancelled flights
+```{r}
+not_cancelled <- flights %>% 
+  filter(!is.na(dep_delay),!is.na(arr_delay))
+not_cancelled %>% 
+  group_by(year,month,day) %>% 
+  summarise(mean=mean(dep_delay),.groups='drop')
+# By removing cancelled flights, mean decreased.  Using this code chunk, it helps remove outlier data
+```
+#### Using counts and creating delayss.  Use geom_freqpoly
+```{r}
+delayss <- not_cancelled %>% 
+  group_by(tailnum) %>% 
+  summarise(delay=mean(arr_delay),.groups='drop')
+ggplot(data=delayss,mapping=aes(x=delay))+
+  geom_freqpoly(binwidth=10)
+# Interestingly this is a new geom_function and it shows that there are delays up to 330 minutes
+```
+#### use scatterplot now
+```{r}
+delayss <- not_cancelled %>% 
+  group_by(tailnum) %>% 
+  summarise(
+    delay=mean(arr_delay,na.rm=TRUE),
+    n=n(),.groups='drop')
+ggplot(data=delayss,mapping=aes(x=n,y=delay))+
+  geom_point(alpha=1/10)
+# Greatest variation is where the flights are fewer in number
+```
+#### Filtering above plot
+```{r}
+delayss %>% 
+  filter(n>25) %>% 
+  ggplot(mapping=aes(x=n,y=delay))+
+  geom_point(alpha=1/10)
+# removing flights under 25
+```
+#### **I prefer Cycling**
+
+### Section 5.7: Grouped mutates (and filters)
+
+Read and run all of the examples.
+
