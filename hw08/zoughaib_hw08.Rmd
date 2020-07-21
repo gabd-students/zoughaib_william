@@ -15,6 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - As usual, enter the examples in code chunks and run them, unless told otherwise.
 
+```{r}
+library(tidyverse)
+```
 
 
 ## Chapter 5: Data transformation
@@ -146,6 +149,104 @@ delayss %>%
 # removing flights under 25
 ```
 #### **I prefer Cycling**
+####Using mean with group_by and summarise
+```{r}
+not_cancelled %>% 
+  group_by(year,month,day) %>% 
+  summarise(
+    avg_delay1=mean(arr_delay),
+    avg_delay2=mean(arr_delay[arr_delay>0]),.groups='drop'
+  )
+```
+#### Using standard deviation
+```{r}
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(distance_sd=sd(distance)) %>% 
+  arrange(desc(distance_sd))
+# creating distance sd for each dest
+```
+#### Use min(), max(), and then first (),last() 
+```{r}
+not_cancelled %>% 
+  group_by(year,month,day) %>% 
+  summarise(
+    first=min(dep_time),
+    last=max(dep_time)
+  )
+```
+```{r}
+not_cancelled %>% 
+  group_by(year,month,day) %>% 
+  summarise(
+    first_dep=first(dep_time),
+    last_dep=last(dep_time)
+  )
+# both of these codes do the same thing but with differently named functions.  
+```
+####Using r to find earliest and latest flight times each day
+```{r}
+not_cancelled %>% 
+  group_by(year,month,day) %>% 
+  mutate(r=min_rank(desc(dep_time))) %>% 
+  filter(r%in% range(r))
+# This code chunk would be extremely useful when trying to determine earliest and flight departs.
+```
+####Counting the number of distinct values
+```{r}
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(carriers=n_distinct(carrier)) %>% 
+  arrange(desc(carriers))
+# I presume this is showing the number of carriers going to that specific destination.  Carriers being those like United, American Airlines, Southwest, etc.
+```
+```{r}
+not_cancelled %>% 
+  count(dest)
+# Counting the number of flights to that specific destination over the whole year
+```
+```{r}
+not_cancelled %>% 
+  count(tailnum,wt=distance)
+# The number of miles each plane (identified by tailnum) flew in a year
+```
+#### Find the number of flights that left before 5 am
+```{r}
+not_cancelled %>% 
+  group_by(year,month,day) %>% 
+  summarise(n_early=sum(dep_time<500))
+# This would be useful in finding how many flights left at a certain time
+```
+####Find the proportion of flights each day that were delayed by more than 60 minutes
+```{r}
+not_cancelled %>% 
+  group_by(year,month,day) %>% 
+  summarise(hour_prop=mean(arr_delay>60))
+```
+####Grouping my multiple variables
+#### USe daily vector for per_day vector, then building into per_month, and then finally per_year
+```{r}
+daily <- group_by(flights,year,month,day)
+(per_day <- summarise(daily,flights=n()))
+# finding the total number of flights eacy day
+```
+```{r}
+(per_month <- summarise(per_day,flights=sum(flights)))
+# finding the total number of flights each month
+```
+```{r}
+(per_year <- summarise(per_month,flights=sum(flights)))
+# calculating all the flights in 2013
+```
+#### Ungrouping my multiple variables
+#### Remove grouping and turn into daily once again
+```{r}
+daily %>% 
+  ungroup() %>% 
+  summarise(flights=n())
+```
+
+
 
 ### Section 5.7: Grouped mutates (and filters)
 
