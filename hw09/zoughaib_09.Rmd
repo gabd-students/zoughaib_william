@@ -1,5 +1,5 @@
 ---
-title: "HW 08: More Data Wrangling"
+title: "HW 09: Wrangling 2"
 author: "William Zoughaib"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output: html_notebook
@@ -29,9 +29,10 @@ darters_filtered <- darters_data %>%
   filter(species=="blennioides"|species=="caeruleum"|species=="spectabile")
 darters_filtered
 ```
+***
 #### Wrangle data.  Use Mutate to change Riffle values, centimeter values, create total_substrate column, change f & m to female and male
 ```{r}
-mutate(darters_filtered,total_substrate=majsub+minsub) %>% 
+mut_darters <- mutate(darters_filtered,total_substrate=majsub+minsub) %>% 
   mutate(riffle = ifelse(riffle == "1", 
                              "Riffle 1", 
                              "Riffle 2")) %>% 
@@ -39,5 +40,109 @@ mutate(darters_filtered,total_substrate=majsub+minsub) %>%
   mutate(sex=ifelse(sex=="m","Male","Female"))
 # all values under total_substrate = 1
 ```
+***
+#### Summarize Data: use sum_darters
+```{r}
+sum_darters <- group_by(mut_darters,species,riffle)   
+darters_sum <- summarise(sum_darters,
+  mean_length=mean(length,na.rm=TRUE), 
+  mean_depth=mean(depth,na.rm=TRUE),
+  mean_velocity=mean(velocity,na.rm=TRUE),.groups='drop')
+darters_sum
+# narrowed it down to the five columns i wanted which are species, riffle, mean_length,mean_depth.  This was tough.
+```
+#### Run kable on newly created darters_sum
+```{r}
+kable(darters_sum)
+# This looks cool
+```
+***
+#### Graph Data
+####Plot 1
+***
+##### Run stat_summary
+```{r}
+ggplot(data=sum_darters) + 
+  stat_summary(
+     mapping = aes(x=species,y=length),
+     fun.ymin = min,
+     fun.ymax = max,
+     fun.y = median,
+     na.rm=TRUE)
+```
+***
+##### RUn stat_summary and geom_point (use darters_sum)
+```{r}
+ggplot(data=darters_sum,mapping=aes(x=species,y=mean_length))+
+  geom_point(shape=15,color="red")+
+  stat_summary(mapping = aes(x=species,y=length),
+     fun.ymin = min,
+     fun.ymax = max,
+     fun.y = median,
+     data=sum_darters,
+     na.rm = TRUE)
+# I had to use ?stat_summary to find out how to overlay mean _length over length.  I think this is how you do it?  You have to determine what the data is somehow.  I also added color to the square shape as it will be easier to notice
+```
+***
+##### Rearrange placements of stat summary and geom_point to confirm plot
+```{r}
+ggplot(data=sum_darters) + 
+  stat_summary(
+     mapping = aes(x=species,y=length),
+     fun.ymin = min,
+     fun.ymax = max,
+     fun.y = median,
+     na.rm=TRUE)+
+  geom_point(mapping=aes(x=species,y=mean_length),data=darters_sum,shape=15,color="red")
+# Swapping the sum_darters with darters_sum and changing plot functions still results in the same thing.
+```
+***
+##### Run coord_flip() on the stat_summary with geom_point overlay.  Run facet_wrap to seperate the two riffles and add labs() to include measurement
+```{r}
+ggplot(data=sum_darters) + 
+  stat_summary(
+     mapping = aes(x=species,y=length),
+     fun.ymin = min,
+     fun.ymax = max,
+     fun.y = median,
+     na.rm=TRUE)+
+  geom_point(mapping=aes(x=species,y=mean_length),data=darters_sum,shape=15,color="red")+
+  facet_wrap(~riffle,ncol=2)+
+  labs(x=NULL)+
+  labs(y="length(mm)")+
+  coord_flip()
+# I can observe the two riffles now with labels changed.  There is greater variance in Riffle 2 than in Riffle 1
+```
+***
+#### Plot 2.  Change color,add stat_summary, another stat_summary, facet,label,coord_flip()
+```{r}
+ggplot(data=sum_darters) + 
+  stat_summary(
+     mapping = aes(x=species,y=length),
+     fun.ymin = min,
+     fun.ymax = max,
+     geom="point",
+     size=2.2,
+     fun.y = median,
+     na.rm=TRUE
+     )+
+  stat_summary(
+    mapping=aes(x=species,y=length),
+    fun.ymin = min,
+    fun.ymax = max,
+    size=3,
+    color="maroon",
+    fun.y=mean,
+    na.rm=TRUE
+  )+
+  geom_point(mapping=aes(x=species,y=mean_length),data=darters_sum,color="grey66")+
+  facet_wrap(~riffle,ncol=2)+
+  labs(x=NULL,y="length(mm)")+
+  coord_flip()
+```
+
+
+
+
 
 
