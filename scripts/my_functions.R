@@ -16,9 +16,7 @@ std_error <- function(vector,na.rm=FALSE){   #function argument tells R that we 
          vector)
   (sd(vector)/sqrt(length(vector)))}         # actually formula to obtain std_error
 
-std_error(family_ages,na.rm=FALSE)
-std_error(family_ages,na.rm=TRUE)
-#### std_error for both of these is the same.  
+
 
 
 
@@ -29,11 +27,12 @@ std_error(family_ages,na.rm=TRUE)
 ##### each of these arguments will be set to zero
 #### Remember to use function() to create SMI function; remember to use {} as that actually creates function
 
-scaled_mass <- function(mass=0,tarsus=0,slope=0){
+scaled_mass <- 
+  function(mass=0,tarsus=0,slope=0){
   mass*(((mean(tarsus))/tarsus))^slope 
   }
 
-scaled_mass(mass=mass <- c(26.7,22.8,25.7,26.1,23.9),tarsus=tarsus <- c(18.4,17.5,18.4,18.0,18.2),slope=1.5)
+
   
   
 
