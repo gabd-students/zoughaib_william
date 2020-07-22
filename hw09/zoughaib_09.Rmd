@@ -139,7 +139,78 @@ ggplot(data=sum_darters) +
   facet_wrap(~riffle,ncol=2)+
   labs(x=NULL,y="length(mm)")+
   coord_flip()
+# I think I followed all the steps.  "Grey66" is in the geom_point, first stat_summary has median,"point", & 2.2.  Second stat_summary has mean,3, and maroon.  It is just not what I expected.  
 ```
+
+
+
+
+
+
+
+### Stress and corticosterones in birds
+***
+#### Import Data
+```{r}
+feathers_data <- read_csv(here("data","feathers.csv"),locale = locale(decimal_mark = ",")) %>% 
+  rename(capture_date="Capture Date",day=Date,site=Site,urban_score="Urba Score",cortF="CortF ng/mg",cortB="CortF ng/mm", sex=Sex,smi=SMI,tarsus=Tarsus,mass=Mass,basal_cort=Bas_Cort,stress_cort=Stress_Cort)
+feathers_data
+# imported data, then changed decimal marks to "." instead of ",".  I then changed column names.  I needed to remember to do "around spaced words" to change column name.  Saved data as feathers_data.  
+```
+
+***
+#### Calculate _b_ slope of the regression. Comments provide directions
+```{r}
+mean_tarsus <- mean(tarsus,na.rm = TRUE)
+mean_tarsus
+# find mean tarsus length and store in mean_tarsus.
+```
+```{r}
+mut_feathers <- mutate(feathers_data,log_mass=log(mass),log_tarsus=log(tarsus))
+mut_feathers
+# Mutate to log transform mass and log transform tarsus.  Use log_mass and log_tarsus.  
+```
+```{r}
+major_axis <- sma(log_mass~log_tarsus,data=mut_feathers)
+summary(major_axis)
+# create major_axis using sma(log_mass~log_tarsus,data=mut_darters)...**DO NOT USE -** or you will have issues!!!!!!  Then apply summary function
+```
+```{r}
+coef(major_axis)
+major_axis_coef <- coef(major_axis)
+# simply showing the estimate values for elevation and slope
+b <- major_axis_coef['slope']
+b
+# storing b value for slope estimate
+```
+#### Now that we have b, use SMI function
+```{r}
+smi_mut_feathers <- mutate(mut_feathers,new_smi=scaled_mass(mass,tarsus,b))  
+smi_mut_feathers
+# smi values look similar
+```
+#### Compare SMI next to each other
+```{r}
+select(smi_mut_feathers,smi,new_smi)
+# YAY!!!! 
+```
+***
+#### SUmmarise basal and stress corticosterone by getting mean and std_err
+```{r}
+sum_feathers <- group_by(smi_mut_feathers,site)
+feathers_sum <- summarise(sum_feathers,
+    basal_vector <- mean(basal_cort,na.rm=TRUE),
+    stress_vector <- mean(stress_cort,na.rm=TRUE),
+    std_err(basal_vector),
+    std_err(stress_vector),
+    .groups='drop')
+feathers_sum
+```
+```{r}
+std_err(basal_vector)
+```
+
+
 
 
 
