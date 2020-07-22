@@ -199,16 +199,41 @@ select(smi_mut_feathers,smi,new_smi)
 ```{r}
 sum_feathers <- group_by(smi_mut_feathers,site)
 feathers_sum <- summarise(sum_feathers,
-    basal_vector <- mean(basal_cort,na.rm=TRUE),
-    stress_vector <- mean(stress_cort,na.rm=TRUE),
-    std_err(basal_vector),
-    std_err(stress_vector),
+    basal_mean =  mean(basal_cort,na.rm=TRUE),
+    stress_mean = mean(stress_cort,na.rm=TRUE),
+    std_err_basal=std_err(basal_cort,na.rm=TRUE),
+    std_err_cort=std_err(stress_cort,na.rm=TRUE),
     .groups='drop')
 feathers_sum
+# I think this is it.  You cannot take the std_err of the mean as it is only one number.  You need to take the std_err of the whole sample!!!!!!
 ```
+***
+#### Graph Data
+#### Plot 1: Boxplot comparing site v. new_smi
 ```{r}
-std_err(basal_vector)
+ggplot(data=smi_mut_feathers)+
+  geom_boxplot(mapping=aes(x=site,y=new_smi))
+# median new_smi is relatively close to each other(23-25).  IQR though differs among each site.  NIORT has the greatest range among its site
 ```
+#### Plot 2: Use geom_point and geom_errorbar on feathers_sum with basal_mean
+```{r}
+ggplot(data=feathers_sum)+
+  geom_point(mapping=aes(x=site,y=std_err_basal))+
+  geom_errorbar(mapping = aes(x=site,ymin=std_err_basal-1,ymax=std_err_basal+1))
+# I think this is how you do it?  I had site become x, so std_err_basal had to be y if we are doing standard error of the mean for basal_cort.  
+```
+#### Plot 3: Repeat above code chunk but do it with geom_linerange and use stress_mean
+```{r}
+ggplot(data=feathers_sum)+
+  geom_point(mapping=aes(x=site,y=std_err_cort))+
+  geom_linerange(mapping = aes(x=site,ymin=std_err_cort-1,ymax=std_err_cort+1))
+# This should be it.  Remove the horizontal dividers
+```
+
+
+
+***
+### **THE END**
 
 
 
