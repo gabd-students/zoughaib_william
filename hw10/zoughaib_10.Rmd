@@ -1,0 +1,52 @@
+---
+title: "HW 10: Data Visualization 1"
+author: "William Zoughaib"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+#### Install and load (library) tidyverse,here,GGally,patchwork
+```{r}
+library(tidyverse)
+library(here)
+library(GGally)
+library(patchwork)
+```
+***
+#### Load sparrows.txt.  Wrangle Data
+```{r}
+sparrows_raw <- read_tsv(here("data","sparrows.txt"))
+sparrows_raw
+```
+```{r}
+sparrows <- sparrows_raw %>% 
+  mutate(box_group = "Sparrows",
+         row_order = 1:nrow(.))
+view(sparrows)
+```
+```{r}
+sparrows
+# via mutate, we added box_group and row_order columns
+```
+***
+#### Figure 2 Outliers Plots
+```{r}
+plot_box <- sparrows %>% 
+  ggplot(aes(x=box_group,y=wingcrd))+
+  geom_boxplot(width=0.25)+
+  labs(x=NULL,y="Wing length (mm)")
+```
+```{r}
+plot_cleveland <- sparrows %>% 
+  ggplot(aes(x=wingcrd,y=row_order))+
+  geom_point()+
+  labs(x="Wing length (mm)",
+       y="Order of the data")
+```
+#### add plot_box and plot_cleveland together.  coord_flip()
+```{r}
+plot_box+plot_cleveland+coord_flip()
+```
+
