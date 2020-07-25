@@ -131,4 +131,31 @@ h1+h2
 ```
 ***
 #### Figure 10: Relationships
-
+#### Run ggscatmat
+```{r}
+sparrows %>% ggscatmat(columns = 1:7)
+# by running ggscatmat, i narrowed it down to columns 1:7 which are the first seven variables.  
+```
+***
+#### Figure 11: Interactions
+```{r}
+month_order=c("May","June","July","August","September")
+sparrows %>% 
+  filter(Month%in%5:9,
+         Sex!=0) %>% 
+  mutate(Month=case_when(
+    Month==5~"May",
+    Month==6~"June",
+    Month==7~"July",
+    Month==8~"August",
+    Month==9~"September"),
+    Month=factor(Month,levels=month_order,ordered = TRUE),
+    Sex=ifelse(Sex==4,"Male","Female")) %>% 
+  ggplot(aes(x=wingcrd,y=wt))+
+  geom_point()+
+  geom_smooth(method="lm",se=FALSE)+
+  facet_grid(Sex~Month)
+# yay!!!  Only the five months selected are shown.  Sex (Male v Female) is shown without the immature individuals.  se=FALSE means there will be no shading around the line in geom_smooth
+```
+***
+#### et Voila; THE END
