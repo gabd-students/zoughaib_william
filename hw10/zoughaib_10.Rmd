@@ -134,7 +134,7 @@ h1+h2
 #### Run ggscatmat
 ```{r}
 sparrows %>% ggscatmat(columns = 1:7)
-# by running ggscatmat, i narrowed it down to columns 1:7 which are the first seven variables.  
+# by running ggscatmat, i narrowed it down to columns 1:7 which are the first seven variables.  All the words are crammed together.  This has to do with the view.  I honestly do not like it
 ```
 ***
 #### Figure 11: Interactions
