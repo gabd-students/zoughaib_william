@@ -1,0 +1,21 @@
+---
+title: "HW 11: Data Visualization 1 cont"
+author: "William Zoughaib"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+```{r}
+library(tidyverse)
+library(here)
+library(GGally)
+library(patchwork)
+```
+***
+#### Load aegla_crabs.csv dataset into crabs_raw
+```{r}
+crabs_raw <- read_csv(here("data","aegla_crabs.csv"))
+crabs_raw
+```
+
