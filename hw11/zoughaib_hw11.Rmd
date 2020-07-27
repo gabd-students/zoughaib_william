@@ -95,4 +95,37 @@ Ca_h1 <- tidy_crabs %>%
 Ca_h1
 # While most data points fall in the 0-0.1 range (i presume this is in ppm), there is a wider distribution of Ca [] than would be assumed.  Looking at view(tidy_crabs), it appears that alot of the data points were zero when measured.  I could then presume that the 3.9-4.0 data points are outliers.  
 ```
-
+#### Density Plots
+```{r}
+flow_d1 <- tidy_crabs %>% 
+  ggplot()+
+  geom_density(aes(x=Flow))
+flow_d1
+# most data points are found at the peak around 0.4 but there are several smaller peaks founds.  
+```
+```{r}
+depth_d1 <- tidy_crabs %>% 
+  ggplot()+
+  geom_density(aes(x=Depth))
+depth_d1
+# the peak is at 1 with most of the data falling between 0 and 2.  Again outlier data can be observed at depth of 5.
+```
+```{r}
+Ca_d1 <- tidy_crabs %>% 
+  ggplot()+
+  geom_density(aes(x=Ca))
+Ca_d1
+# This is a very strange density plot.  I cannot interpret data from here unless I was to use other plots.  It is **not** representative of the corresponding histogram plot
+```
+#### Patchwork of histograms and density plots
+```{r}
+flow_h1+flow_d1+depth_h1+depth_d1+Ca_h1+Ca_d1+plot_layout(ncol=2,nrow=3)
+# Instead of scrolling back and forth trying to compare the two plots, it is nice to use patchwork to see the plots at the same time.  I am still put off by the Ca density plot. 
+```
+#### Run ggpairs
+```{r}
+tidy_crabs %>% ggpairs()
+# We have way too many column variables...It took a while to load.  The data cannot be interpreted.  It looks like squiggly lines or blobs.  And then I have to scroll down through all the **plot: []** to even look at what the answer is. It is really ugly and I would not use it unless I could limit it to around 5-8 variables.  
+```
+***
+### THE END
