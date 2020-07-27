@@ -18,4 +18,81 @@ library(patchwork)
 crabs_raw <- read_csv(here("data","aegla_crabs.csv"))
 crabs_raw
 ```
+#### Wrangle the Data: Use select to remove Site,AT,WT,Crab,Shrimp,Aeglam,AeglaFe,AeglaFo columns; use drop_na to remove NA variables.  create a row_order column variable; remember to use %>% %>% %>% !!!
+```{r}
+tidy_crabs <- crabs_raw %>% 
+  select(!c("Site","AT","WT","Crab","Shrimp","Aeglam","AeglaFe","AeglaFo")) %>% 
+  drop_na() %>% 
+  mutate(row_order = 1:nrow(.))
+ tidy_crabs
+ # From my results, it appears we lost a row (56-55 rows now) due to the NA row being dropped, lost 8 column variables but added a row_order column.  and i used pipes.  
+```
+#### Exploring, Describing,Interpreting the Data
+```{r}
+view(tidy_crabs)
+# from using view(tidy_crabs), it appears that possible data outliers may appear in TDS, Cond, Width, and pH.  
+```
+#### 2x2 Cleveland plots
+```{r}
+p_TDS <- tidy_crabs %>% 
+  ggplot(aes(y=row_order))+
+  geom_point(aes(x=TDS))+
+  theme(axis.title.y=element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y=element_blank())
+p_Cond <- tidy_crabs %>% 
+  ggplot(aes(y=row_order))+
+  geom_point(aes(x=Cond))+
+  theme(axis.title.y=element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y=element_blank())
+p_Width <- tidy_crabs %>% 
+  ggplot(aes(y=row_order))+
+  geom_point(aes(x=Width))+
+  theme(axis.title.y=element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y=element_blank())
+p_pH <- tidy_crabs %>% 
+  ggplot(aes(y=row_order))+
+  geom_point(aes(x=pH))+
+  theme(axis.title.y=element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y=element_blank())
+p_TDS+p_Cond+p_Width+p_pH
+# TDS and Cond both have 4 outliers and they are rows 52:55.  They both fall out of the range of the other data points.  Width has an outlier as well but it could be do to measurement error?  The most serious outlier, if true, is the pH one where pH falls around 6.25 which can be quite hazardous to carbonate skeleton construction.  
+```
+#### Histograms
+```{r}
+flow_h1 <- tidy_crabs %>% 
+  ggplot()+
+  geom_histogram(aes(x=Flow),
+                 binwidth = 0.05,
+                 boundary=0,
+                 closed="right",
+                 color="black")
+flow_h1
+# I used the Flow column variable and honestly this is not a tidy histogram.  Most flow range though occurs between 0.35-0.45
+```
+```{r}
+depth_h1 <- tidy_crabs %>% 
+  ggplot()+
+  geom_histogram(aes(x=Depth),
+                 binwidth = 0.25,
+                 boundary=0,
+                 closed="right",
+                 color="black")
+depth_h1
+# I am in shock by this histogram.  When viewing the tidy_crabs with view(), i missed the outlier that is shown here in Depth.  A depth of 5 is much higher than the others.
+```
+```{r}
+Ca_h1 <- tidy_crabs %>% 
+  ggplot()+
+  geom_histogram(aes(x=Ca),
+                 binwidth = 0.1,
+                 boundary=0,
+                 closed="right",
+                 color="black")
+Ca_h1
+# While most data points fall in the 0-0.1 range (i presume this is in ppm), there is a wider distribution of Ca [] than would be assumed.  Looking at view(tidy_crabs), it appears that alot of the data points were zero when measured.  I could then presume that the 3.9-4.0 data points are outliers.  
+```
 
