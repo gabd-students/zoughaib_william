@@ -1,5 +1,5 @@
 ---
-title: "HW 12: Data Visualization 1 cont"
+title: "HW 12: Dates"
 author: "William Zoughaib"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output: html_notebook
@@ -51,6 +51,9 @@ mlk_dream <- "1963 August 28"
 birth_time <- mdy(birth_date)
 birth_time
 # I really dont know when I was born.  
+anderson_time <- dmy(anderson)
+anderson_time
+# Interesting.  You only hear about the nurses during that time period. 
 anning_time <- ymd(anning)
 anning_time
 # I would hunt for fossils in the afternoon
@@ -116,3 +119,32 @@ wday(find_my_day_birth(year=2525,month=5,day=14),label=TRUE)
 # Using my find_my_day_birth function
 ```
 #### How many days was it between the birth of Dr. Elizabeth Garrett Anderson and Alice Augusta Ball?
+```{r}
+anderson_time-ball_time
+# approximately 20499 days between their births
+```
+#### What is the duration between Martin Luther King Jr.’s birth date and his I Had a Dream speech.
+```{r}
+mlk_birth_time.1-mlk_dream_time
+# approximately 12643 days
+```
+####Enter the eight POSIXct compatible birth dates, including your own, into a vector in the order they are given above. Name each element of the vector with the last name of each person (review Assignment 2, part 2). You can but do not have to enter the date of the Dream speech.
+```{r}
+all_birth_dates <- c(birth_time,anderson_time,anning_time,ball_time,earle_time,franklin_time,lederberg_time,mcclintock_time,mlk_birth_time.1,mlk_dream_time)
+all_birth_dates
+```
+#### Of the eight birth dates from above, including your own, which of them are leap years? You must start with the POSIXct dates in your vector, and display the final result as only the years of the leap years, not the date. You should end up with 3-4 years, depending on whether your birth year was a leap year. If your results show the full birth dates, then you need to apply one of the lubridate functions.
+```{r}
+year <- year(all_birth_dates)
+year
+leap_year(year)
+# This is the only way I could figure it out.  I even went to parts 4 and 5 of CH16.  1836, 1892, 1920 are the leap years.  
+```
+#### Subtract each birth date in the vector from your own to calculate the number of days that have passed between their birth dates and yours. Sort the results from greatest number of days to fewest. You should be listed last (or near the end) with a difference of 0 days.
+```{r}
+diff_days <- birth_time-all_birth_dates
+sort(diff_days,decreasing = TRUE)
+```
+***
+#### Part 2: Wrangling and plotting with dates
+
