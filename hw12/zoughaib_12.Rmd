@@ -14,7 +14,7 @@ library(lubridate)
 ***
 #### Part 1: Play Date (copied and pasted)
 ```{r}
-birth_date <- ""
+birth_date <- "05/14/1998"
 
 # Elizabeth Garret Anderson was the first female physician
 anderson <- "9 June 1836"
@@ -46,4 +46,43 @@ mcclintock <- "16061902"
 mlk_birth <- "1/15/29"
 mlk_dream <- "1963 August 28"
 ```
+#### Convert each date to POSIXct format, using lubridate functions, saving each to a unique variable.  (I guess I am adding a time of day?)
+```{r}
+birth_time <- mdy(birth_date)
+birth_time
+# I really dont know when I was born.  
+anning_time <- ymd(anning)
+anning_time
+# I would hunt for fossils in the afternoon
+ball_time <- mdy(ball)
+ball_time
+# I am most preductive with science in the morning
+earle_time <- mdy(earle)
+earle_time
+# Lunch time
+franklin_time <- dmy(franklin)
+franklin_time
+# nasty little hobbitses
+lederberg_time <- mdy(lederberg)
+lederberg_time
+# oof, i ran out
+mcclintock_time <- dmy(mcclintock)
+mcclintock_time
+# This time is confusing
+mlk_birth_time <- mdy(mlk_birth)
+mlk_birth_time
+mlk_dream_time <- ymd(mlk_dream)
+mlk_dream_time
+# Pertinent
+```
+#### Check yours dates to be sure they are correct. If you spot any errors, correct them now using the proper lubridate function(s).
+```{r}
+mlk_birth.1 <- "01/15/1929"
+mlk_birth_time.1 <- mdy(mlk_birth.1)
+mlk_birth_time.1
+# edited birth year from 2029 to 1929.  
+```
+
+
+
 
