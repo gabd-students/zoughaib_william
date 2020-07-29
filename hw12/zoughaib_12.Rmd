@@ -82,7 +82,37 @@ mlk_birth_time.1 <- mdy(mlk_birth.1)
 mlk_birth_time.1
 # edited birth year from 2029 to 1929.  
 ```
-
-
-
-
+#### What day of the week were you born on? Show the full day name, not the abbreviated name or the day number.
+```{r}
+wday(birth_time,label=TRUE,abbr=FALSE)
+# Thursday was the day I was born on.  
+```
+####What day of the week will your birthday be on this year? Use lubridate’s update function. You must figure out how to do it entirely by code for full points (no hard-coding). In other words, you code should work just as well next year or five years in the future, without editing.`
+```{r}
+find_my_day_birth <- function(year,month,day){
+  update(birth_time,year,month,day)}
+  wday(find_my_day_birth(year=2020,month=5,day=14),label=TRUE,abbr=FALSE)
+# I am really confused by this.  This is the only way I could get it to work without errors. My birthday fell on a Thursday this year.   
+```
+```{r}
+wday(find_my_day_birth(year=2024,month=5,day=14),label=TRUE,abbr=FALSE)
+  # THis still works
+```
+```{r}
+wday(find_my_day_birth(year=2020,month=10,day=5),label=TRUE,abbr=FALSE)
+  # using Mom's birthdate, it still works.  
+```
+```{r}
+wday(find_my_day_birth(year=2020,month=4,day=26),label=TRUE,abbr=FALSE)
+# My sisters still works.  Sorry for all these extra code chunks.  
+```
+#### What day of the week would your birthday be on in the Year 2525, if Man is still alive? How old would you be? Here you may hard-code 2525. Show the abbreviated day of the week.
+```{r}
+wday(update(birth_time,year=2525),label=TRUE)
+# Hard code
+```
+```{r}
+wday(find_my_day_birth(year=2525,month=5,day=14),label=TRUE)
+# Using my find_my_day_birth function
+```
+#### How many days was it between the birth of Dr. Elizabeth Garrett Anderson and Alice Augusta Ball?

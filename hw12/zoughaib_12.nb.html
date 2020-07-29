@@ -11,7 +11,7 @@
 
 <meta name="author" content="William Zoughaib" />
 
-<meta name="date" content="2020-07-28" />
+<meta name="date" content="2020-07-29" />
 
 <title>HW 12: Data Visualization 1 cont</title>
 
@@ -1747,7 +1747,7 @@ summary {
 
 <h1 class="title toc-ignore">HW 12: Data Visualization 1 cont</h1>
 <h4 class="author">William Zoughaib</h4>
-<h4 class="date">28 July 2020</h4>
+<h4 class="date">29 July 2020</h4>
 
 </div>
 
@@ -1900,10 +1900,109 @@ mlk_birth_time.1</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="what-day-of-the-week-were-you-born-on-show-the-full-day-name-not-the-abbreviated-name-or-the-day-number." class="section level4">
+<h4>What day of the week were you born on? Show the full day name, not the abbreviated name or the day number.</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2RheShiaXJ0aF90aW1lLGxhYmVsPVRSVUUsYWJicj1GQUxTRSlcbmBgYCJ9 -->
+<pre class="r"><code>wday(birth_time,label=TRUE,abbr=FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRodXJzZGF5XG43IExldmVsczogU3VuZGF5IDwgTW9uZGF5IDwgVHVlc2RheSA8IC4uLiA8IFNhdHVyZGF5XG4ifQ== -->
+<pre><code>[1] Thursday
+7 Levels: Sunday &lt; Monday &lt; Tuesday &lt; ... &lt; Saturday</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaHVyc2RheSB3YXMgdGhlIGRheSBJIHdhcyBib3JuIG9uLiAgXG5gYGAifQ== -->
+<pre class="r"><code># Thursday was the day I was born on.  </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>####What day of the week will your birthday be on this year? Use lubridate’s update function. You must figure out how to do it entirely by code for full points (no hard-coding). In other words, you code should work just as well next year or five years in the future, without editing.`</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmluZF9teV9kYXlfYmlydGggPC0gZnVuY3Rpb24oeWVhcixtb250aCxkYXkpe1xuICB1cGRhdGUoYmlydGhfdGltZSx5ZWFyLG1vbnRoLGRheSl9XG4gIHdkYXkoZmluZF9teV9kYXlfYmlydGgoeWVhcj0yMDIwLG1vbnRoPTUsZGF5PTE0KSxsYWJlbD1UUlVFLGFiYnI9RkFMU0UpXG5gYGAifQ== -->
+<pre class="r"><code>find_my_day_birth &lt;- function(year,month,day){
+  update(birth_time,year,month,day)}
+  wday(find_my_day_birth(year=2020,month=5,day=14),label=TRUE,abbr=FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRodXJzZGF5XG43IExldmVsczogU3VuZGF5IDwgTW9uZGF5IDwgVHVlc2RheSA8IC4uLiA8IFNhdHVyZGF5XG4ifQ== -->
+<pre><code>[1] Thursday
+7 Levels: Sunday &lt; Monday &lt; Tuesday &lt; ... &lt; Saturday</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJIGFtIHJlYWxseSBjb25mdXNlZCBieSB0aGlzLiAgVGhpcyBpcyB0aGUgb25seSB3YXkgSSBjb3VsZCBnZXQgaXQgdG8gd29yayB3aXRob3V0IGVycm9ycy4gTXkgYmlydGhkYXkgZmVsbCBvbiBhIFRodXJzZGF5IHRoaXMgeWVhci4gICBcbmBgYCJ9 -->
+<pre class="r"><code># I am really confused by this.  This is the only way I could get it to work without errors. My birthday fell on a Thursday this year.   </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2RheShmaW5kX215X2RheV9iaXJ0aCh5ZWFyPTIwMjQsbW9udGg9NSxkYXk9MTQpLGxhYmVsPVRSVUUsYWJicj1GQUxTRSlcbmBgYCJ9 -->
+<pre class="r"><code>wday(find_my_day_birth(year=2024,month=5,day=14),label=TRUE,abbr=FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFR1ZXNkYXlcbjcgTGV2ZWxzOiBTdW5kYXkgPCBNb25kYXkgPCBUdWVzZGF5IDwgLi4uIDwgU2F0dXJkYXlcbiJ9 -->
+<pre><code>[1] Tuesday
+7 Levels: Sunday &lt; Monday &lt; Tuesday &lt; ... &lt; Saturday</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICAjIFRIaXMgc3RpbGwgd29ya3NcbmBgYCJ9 -->
+<pre class="r"><code>  # THis still works</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2RheShmaW5kX215X2RheV9iaXJ0aCh5ZWFyPTIwMjAsbW9udGg9MTAsZGF5PTUpLGxhYmVsPVRSVUUsYWJicj1GQUxTRSlcbmBgYCJ9 -->
+<pre class="r"><code>wday(find_my_day_birth(year=2020,month=10,day=5),label=TRUE,abbr=FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIE1vbmRheVxuNyBMZXZlbHM6IFN1bmRheSA8IE1vbmRheSA8IFR1ZXNkYXkgPCAuLi4gPCBTYXR1cmRheVxuIn0= -->
+<pre><code>[1] Monday
+7 Levels: Sunday &lt; Monday &lt; Tuesday &lt; ... &lt; Saturday</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICAjIHVzaW5nIE1vbSdzIGJpcnRoZGF0ZSwgaXQgc3RpbGwgd29ya3MuICBcbmBgYCJ9 -->
+<pre class="r"><code>  # using Mom&#39;s birthdate, it still works.  </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2RheShmaW5kX215X2RheV9iaXJ0aCh5ZWFyPTIwMjAsbW9udGg9NCxkYXk9MjYpLGxhYmVsPVRSVUUsYWJicj1GQUxTRSlcbmBgYCJ9 -->
+<pre class="r"><code>wday(find_my_day_birth(year=2020,month=4,day=26),label=TRUE,abbr=FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFN1bmRheVxuNyBMZXZlbHM6IFN1bmRheSA8IE1vbmRheSA8IFR1ZXNkYXkgPCAuLi4gPCBTYXR1cmRheVxuIn0= -->
+<pre><code>[1] Sunday
+7 Levels: Sunday &lt; Monday &lt; Tuesday &lt; ... &lt; Saturday</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBNeSBzaXN0ZXJzIHN0aWxsIHdvcmtzLiAgU29ycnkgZm9yIGFsbCB0aGVzZSBleHRyYSBjb2RlIGNodW5rcy4gIFxuYGBgIn0= -->
+<pre class="r"><code># My sisters still works.  Sorry for all these extra code chunks.  </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="what-day-of-the-week-would-your-birthday-be-on-in-the-year-2525-if-man-is-still-alive-how-old-would-you-be-here-you-may-hard-code-2525.-show-the-abbreviated-day-of-the-week." class="section level4">
+<h4>What day of the week would your birthday be on in the Year 2525, if Man is still alive? How old would you be? Here you may hard-code 2525. Show the abbreviated day of the week.</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2RheSh1cGRhdGUoYmlydGhfdGltZSx5ZWFyPTI1MjUpLGxhYmVsPVRSVUUpXG5gYGAifQ== -->
+<pre class="r"><code>wday(update(birth_time,year=2525),label=TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIE1vblxuNyBMZXZlbHM6IFN1biA8IE1vbiA8IFR1ZSA8IFdlZCA8IFRodSA8IC4uLiA8IFNhdFxuIn0= -->
+<pre><code>[1] Mon
+7 Levels: Sun &lt; Mon &lt; Tue &lt; Wed &lt; Thu &lt; ... &lt; Sat</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud2RheShmaW5kX215X2RheV9iaXJ0aCh5ZWFyPTI1MjUsbW9udGg9NSxkYXk9MTQpLGxhYmVsPVRSVUUpXG5gYGAifQ== -->
+<pre class="r"><code>wday(find_my_day_birth(year=2525,month=5,day=14),label=TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIE1vblxuNyBMZXZlbHM6IFN1biA8IE1vbiA8IFR1ZSA8IFdlZCA8IFRodSA8IC4uLiA8IFNhdFxuIn0= -->
+<pre><code>[1] Mon
+7 Levels: Sun &lt; Mon &lt; Tue &lt; Wed &lt; Thu &lt; ... &lt; Sat</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBVc2luZyBteSBmaW5kX215X2RheV9iaXJ0aCBmdW5jdGlvblxuYGBgIn0= -->
+<pre class="r"><code># Using my find_my_day_birth function</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="how-many-days-was-it-between-the-birth-of-dr.-elizabeth-garrett-anderson-and-alice-augusta-ball" class="section level4">
+<h4>How many days was it between the birth of Dr. Elizabeth Garrett Anderson and Alice Augusta Ball?</h4>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkhXIDEyOiBEYXRhIFZpc3VhbGl6YXRpb24gMSBjb250Ig0KYXV0aG9yOiAiV2lsbGlhbSBab3VnaGFpYiINCmRhdGU6ICJgciBmb3JtYXQoU3lzLnRpbWUoKSwgJyVkICVCICVZJylgIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQplZGl0b3Jfb3B0aW9uczogDQogIGNodW5rX291dHB1dF90eXBlOiBpbmxpbmUNCi0tLQ0KYGBge3J9DQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkoaGVyZSkNCmxpYnJhcnkobHVicmlkYXRlKQ0KYGBgDQoqKioNCiMjIyMgUGFydCAxOiBQbGF5IERhdGUgKGNvcGllZCBhbmQgcGFzdGVkKQ0KYGBge3J9DQpiaXJ0aF9kYXRlIDwtICIwNS8xNC8xOTk4Ig0KDQojIEVsaXphYmV0aCBHYXJyZXQgQW5kZXJzb24gd2FzIHRoZSBmaXJzdCBmZW1hbGUgcGh5c2ljaWFuDQphbmRlcnNvbiA8LSAiOSBKdW5lIDE4MzYiDQoNCiMgTWFyeSBBbm5pbmcgZGlzY292ZXJlZCB0aGUgZmlyc3QgY29tcGxldGUgUGxlc2lvc2F1ciBmb3NzaWwsIA0KIyBhbmQgb3RoZXIgaW1wb3J0YW50IEp1cmFzc2ljIGZvc3NpbHMNCmFubmluZyA8LSAgIjE3OTkvMDUvMjEiDQoNCiMgQWxpY2UgQXVndXN0YSBCYWxsIHdhcyBhIGNoZW1pc3Qgd2hvIGRldmVsb3BlZCB0aGUNCiMgZmlyc3QgaW5qZWN0YWJsZSB0cmVhdG1lbnQgZm9yIGxlcHJvc3kuDQpiYWxsIDwtICJKdWx5IDI0LCAxODkyIg0KDQojIFN5bHZpYSBFYXJsZSB3YXMgdGhlIGZpcnN0IGNoaWVmdCBzY2llbnRpc3QgYXQgTk9BQQ0KZWFybGUgPC0gIkF1Z3VzdCwgMzAgKDE5MzUpIg0KDQojIFJvc2FsaW5kIEZyYW5rbGluIHVzZWQgeC1yYXkgZGlmZnJhY3Rpb24gdG8gDQojIGRpc2NvdmVyIEROQSBzdHJ1Y3R1cmUuIFdhdHNvbiBhbmQgQ3JpY2sgY2xhaW1lZCBjcmVkaXQuDQpmcmFua2xpbiA8LSAiMjV0aCBvZiBKdWx5LCAxOTIwIg0KDQojIEVzdGVyIExlZGVyYmVyZyB3YXMgdGhlIGZpcnN0IHRvIGRpc2NvdmVyIHRoYXQgdmlydXNlcyANCiMgaW5mZWN0IGJhY3RlcmlhLiBMZWQgdG8gZGlzY292ZXJ5IG9mIGxhbWJkYSBiYWN0ZXJpb3BoYWdlDQpsZWRlcmJlcmcgPC0gIkRlY2VtYmVyIDE4LCAxOTIyIg0KDQojIEJhcmJhcmEgTWNDbGludG9jayBkaXNjb3ZlcmVkIHRyYW5zcG9zYWJsZSBlbGVtZW50cyAoanVtcGluZyBnZW5lcyksDQojIGFuZCBkZXZlbG9wZWQgc3RhaW5pbmcgdGVjaG5pcXVlcyB0byBzdHVkeSBjaHJvbW9zb21lcw0KbWNjbGludG9jayA8LSAiMTYwNjE5MDIiDQoNCiMgTGV0J3MgYWxzbyByZW1lbWJlciBhIGRyZWFtDQptbGtfYmlydGggPC0gIjEvMTUvMjkiDQptbGtfZHJlYW0gPC0gIjE5NjMgQXVndXN0IDI4Ig0KYGBgDQojIyMjIENvbnZlcnQgZWFjaCBkYXRlIHRvIFBPU0lYY3QgZm9ybWF0LCB1c2luZyBsdWJyaWRhdGUgZnVuY3Rpb25zLCBzYXZpbmcgZWFjaCB0byBhIHVuaXF1ZSB2YXJpYWJsZS4gIChJIGd1ZXNzIEkgYW0gYWRkaW5nIGEgdGltZSBvZiBkYXk/KQ0KYGBge3J9DQpiaXJ0aF90aW1lIDwtIG1keShiaXJ0aF9kYXRlKQ0KYmlydGhfdGltZQ0KIyBJIHJlYWxseSBkb250IGtub3cgd2hlbiBJIHdhcyBib3JuLiAgDQphbm5pbmdfdGltZSA8LSB5bWQoYW5uaW5nKQ0KYW5uaW5nX3RpbWUNCiMgSSB3b3VsZCBodW50IGZvciBmb3NzaWxzIGluIHRoZSBhZnRlcm5vb24NCmJhbGxfdGltZSA8LSBtZHkoYmFsbCkNCmJhbGxfdGltZQ0KIyBJIGFtIG1vc3QgcHJlZHVjdGl2ZSB3aXRoIHNjaWVuY2UgaW4gdGhlIG1vcm5pbmcNCmVhcmxlX3RpbWUgPC0gbWR5KGVhcmxlKQ0KZWFybGVfdGltZQ0KIyBMdW5jaCB0aW1lDQpmcmFua2xpbl90aW1lIDwtIGRteShmcmFua2xpbikNCmZyYW5rbGluX3RpbWUNCiMgbmFzdHkgbGl0dGxlIGhvYmJpdHNlcw0KbGVkZXJiZXJnX3RpbWUgPC0gbWR5KGxlZGVyYmVyZykNCmxlZGVyYmVyZ190aW1lDQojIG9vZiwgaSByYW4gb3V0DQptY2NsaW50b2NrX3RpbWUgPC0gZG15KG1jY2xpbnRvY2spDQptY2NsaW50b2NrX3RpbWUNCiMgVGhpcyB0aW1lIGlzIGNvbmZ1c2luZw0KbWxrX2JpcnRoX3RpbWUgPC0gbWR5KG1sa19iaXJ0aCkNCm1sa19iaXJ0aF90aW1lDQptbGtfZHJlYW1fdGltZSA8LSB5bWQobWxrX2RyZWFtKQ0KbWxrX2RyZWFtX3RpbWUNCiMgUGVydGluZW50DQpgYGANCiMjIyMgQ2hlY2sgeW91cnMgZGF0ZXMgdG8gYmUgc3VyZSB0aGV5IGFyZSBjb3JyZWN0LiBJZiB5b3Ugc3BvdCBhbnkgZXJyb3JzLCBjb3JyZWN0IHRoZW0gbm93IHVzaW5nIHRoZSBwcm9wZXIgbHVicmlkYXRlIGZ1bmN0aW9uKHMpLg0KYGBge3J9DQptbGtfYmlydGguMSA8LSAiMDEvMTUvMTkyOSINCm1sa19iaXJ0aF90aW1lLjEgPC0gbWR5KG1sa19iaXJ0aC4xKQ0KbWxrX2JpcnRoX3RpbWUuMQ0KIyBlZGl0ZWQgYmlydGggeWVhciBmcm9tIDIwMjkgdG8gMTkyOS4gIA0KYGBgDQoNCg0KDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkhXIDEyOiBEYXRhIFZpc3VhbGl6YXRpb24gMSBjb250Ig0KYXV0aG9yOiAiV2lsbGlhbSBab3VnaGFpYiINCmRhdGU6ICJgciBmb3JtYXQoU3lzLnRpbWUoKSwgJyVkICVCICVZJylgIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQplZGl0b3Jfb3B0aW9uczogDQogIGNodW5rX291dHB1dF90eXBlOiBpbmxpbmUNCi0tLQ0KYGBge3J9DQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkoaGVyZSkNCmxpYnJhcnkobHVicmlkYXRlKQ0KYGBgDQoqKioNCiMjIyMgUGFydCAxOiBQbGF5IERhdGUgKGNvcGllZCBhbmQgcGFzdGVkKQ0KYGBge3J9DQpiaXJ0aF9kYXRlIDwtICIwNS8xNC8xOTk4Ig0KDQojIEVsaXphYmV0aCBHYXJyZXQgQW5kZXJzb24gd2FzIHRoZSBmaXJzdCBmZW1hbGUgcGh5c2ljaWFuDQphbmRlcnNvbiA8LSAiOSBKdW5lIDE4MzYiDQoNCiMgTWFyeSBBbm5pbmcgZGlzY292ZXJlZCB0aGUgZmlyc3QgY29tcGxldGUgUGxlc2lvc2F1ciBmb3NzaWwsIA0KIyBhbmQgb3RoZXIgaW1wb3J0YW50IEp1cmFzc2ljIGZvc3NpbHMNCmFubmluZyA8LSAgIjE3OTkvMDUvMjEiDQoNCiMgQWxpY2UgQXVndXN0YSBCYWxsIHdhcyBhIGNoZW1pc3Qgd2hvIGRldmVsb3BlZCB0aGUNCiMgZmlyc3QgaW5qZWN0YWJsZSB0cmVhdG1lbnQgZm9yIGxlcHJvc3kuDQpiYWxsIDwtICJKdWx5IDI0LCAxODkyIg0KDQojIFN5bHZpYSBFYXJsZSB3YXMgdGhlIGZpcnN0IGNoaWVmdCBzY2llbnRpc3QgYXQgTk9BQQ0KZWFybGUgPC0gIkF1Z3VzdCwgMzAgKDE5MzUpIg0KDQojIFJvc2FsaW5kIEZyYW5rbGluIHVzZWQgeC1yYXkgZGlmZnJhY3Rpb24gdG8gDQojIGRpc2NvdmVyIEROQSBzdHJ1Y3R1cmUuIFdhdHNvbiBhbmQgQ3JpY2sgY2xhaW1lZCBjcmVkaXQuDQpmcmFua2xpbiA8LSAiMjV0aCBvZiBKdWx5LCAxOTIwIg0KDQojIEVzdGVyIExlZGVyYmVyZyB3YXMgdGhlIGZpcnN0IHRvIGRpc2NvdmVyIHRoYXQgdmlydXNlcyANCiMgaW5mZWN0IGJhY3RlcmlhLiBMZWQgdG8gZGlzY292ZXJ5IG9mIGxhbWJkYSBiYWN0ZXJpb3BoYWdlDQpsZWRlcmJlcmcgPC0gIkRlY2VtYmVyIDE4LCAxOTIyIg0KDQojIEJhcmJhcmEgTWNDbGludG9jayBkaXNjb3ZlcmVkIHRyYW5zcG9zYWJsZSBlbGVtZW50cyAoanVtcGluZyBnZW5lcyksDQojIGFuZCBkZXZlbG9wZWQgc3RhaW5pbmcgdGVjaG5pcXVlcyB0byBzdHVkeSBjaHJvbW9zb21lcw0KbWNjbGludG9jayA8LSAiMTYwNjE5MDIiDQoNCiMgTGV0J3MgYWxzbyByZW1lbWJlciBhIGRyZWFtDQptbGtfYmlydGggPC0gIjEvMTUvMjkiDQptbGtfZHJlYW0gPC0gIjE5NjMgQXVndXN0IDI4Ig0KYGBgDQojIyMjIENvbnZlcnQgZWFjaCBkYXRlIHRvIFBPU0lYY3QgZm9ybWF0LCB1c2luZyBsdWJyaWRhdGUgZnVuY3Rpb25zLCBzYXZpbmcgZWFjaCB0byBhIHVuaXF1ZSB2YXJpYWJsZS4gIChJIGd1ZXNzIEkgYW0gYWRkaW5nIGEgdGltZSBvZiBkYXk/KQ0KYGBge3J9DQpiaXJ0aF90aW1lIDwtIG1keShiaXJ0aF9kYXRlKQ0KYmlydGhfdGltZQ0KIyBJIHJlYWxseSBkb250IGtub3cgd2hlbiBJIHdhcyBib3JuLiAgDQphbm5pbmdfdGltZSA8LSB5bWQoYW5uaW5nKQ0KYW5uaW5nX3RpbWUNCiMgSSB3b3VsZCBodW50IGZvciBmb3NzaWxzIGluIHRoZSBhZnRlcm5vb24NCmJhbGxfdGltZSA8LSBtZHkoYmFsbCkNCmJhbGxfdGltZQ0KIyBJIGFtIG1vc3QgcHJlZHVjdGl2ZSB3aXRoIHNjaWVuY2UgaW4gdGhlIG1vcm5pbmcNCmVhcmxlX3RpbWUgPC0gbWR5KGVhcmxlKQ0KZWFybGVfdGltZQ0KIyBMdW5jaCB0aW1lDQpmcmFua2xpbl90aW1lIDwtIGRteShmcmFua2xpbikNCmZyYW5rbGluX3RpbWUNCiMgbmFzdHkgbGl0dGxlIGhvYmJpdHNlcw0KbGVkZXJiZXJnX3RpbWUgPC0gbWR5KGxlZGVyYmVyZykNCmxlZGVyYmVyZ190aW1lDQojIG9vZiwgaSByYW4gb3V0DQptY2NsaW50b2NrX3RpbWUgPC0gZG15KG1jY2xpbnRvY2spDQptY2NsaW50b2NrX3RpbWUNCiMgVGhpcyB0aW1lIGlzIGNvbmZ1c2luZw0KbWxrX2JpcnRoX3RpbWUgPC0gbWR5KG1sa19iaXJ0aCkNCm1sa19iaXJ0aF90aW1lDQptbGtfZHJlYW1fdGltZSA8LSB5bWQobWxrX2RyZWFtKQ0KbWxrX2RyZWFtX3RpbWUNCiMgUGVydGluZW50DQpgYGANCiMjIyMgQ2hlY2sgeW91cnMgZGF0ZXMgdG8gYmUgc3VyZSB0aGV5IGFyZSBjb3JyZWN0LiBJZiB5b3Ugc3BvdCBhbnkgZXJyb3JzLCBjb3JyZWN0IHRoZW0gbm93IHVzaW5nIHRoZSBwcm9wZXIgbHVicmlkYXRlIGZ1bmN0aW9uKHMpLg0KYGBge3J9DQptbGtfYmlydGguMSA8LSAiMDEvMTUvMTkyOSINCm1sa19iaXJ0aF90aW1lLjEgPC0gbWR5KG1sa19iaXJ0aC4xKQ0KbWxrX2JpcnRoX3RpbWUuMQ0KIyBlZGl0ZWQgYmlydGggeWVhciBmcm9tIDIwMjkgdG8gMTkyOS4gIA0KYGBgDQojIyMjIFdoYXQgZGF5IG9mIHRoZSB3ZWVrIHdlcmUgeW91IGJvcm4gb24/IFNob3cgdGhlIGZ1bGwgZGF5IG5hbWUsIG5vdCB0aGUgYWJicmV2aWF0ZWQgbmFtZSBvciB0aGUgZGF5IG51bWJlci4NCmBgYHtyfQ0Kd2RheShiaXJ0aF90aW1lLGxhYmVsPVRSVUUsYWJicj1GQUxTRSkNCiMgVGh1cnNkYXkgd2FzIHRoZSBkYXkgSSB3YXMgYm9ybiBvbi4gIA0KYGBgDQojIyMjV2hhdCBkYXkgb2YgdGhlIHdlZWsgd2lsbCB5b3VyIGJpcnRoZGF5IGJlIG9uIHRoaXMgeWVhcj8gVXNlIGx1YnJpZGF0ZeKAmXMgdXBkYXRlIGZ1bmN0aW9uLiBZb3UgbXVzdCBmaWd1cmUgb3V0IGhvdyB0byBkbyBpdCBlbnRpcmVseSBieSBjb2RlIGZvciBmdWxsIHBvaW50cyAobm8gaGFyZC1jb2RpbmcpLiBJbiBvdGhlciB3b3JkcywgeW91IGNvZGUgc2hvdWxkIHdvcmsganVzdCBhcyB3ZWxsIG5leHQgeWVhciBvciBmaXZlIHllYXJzIGluIHRoZSBmdXR1cmUsIHdpdGhvdXQgZWRpdGluZy5gDQpgYGB7cn0NCmZpbmRfbXlfZGF5X2JpcnRoIDwtIGZ1bmN0aW9uKHllYXIsbW9udGgsZGF5KXsNCiAgdXBkYXRlKGJpcnRoX3RpbWUseWVhcixtb250aCxkYXkpfQ0KICB3ZGF5KGZpbmRfbXlfZGF5X2JpcnRoKHllYXI9MjAyMCxtb250aD01LGRheT0xNCksbGFiZWw9VFJVRSxhYmJyPUZBTFNFKQ0KIyBJIGFtIHJlYWxseSBjb25mdXNlZCBieSB0aGlzLiAgVGhpcyBpcyB0aGUgb25seSB3YXkgSSBjb3VsZCBnZXQgaXQgdG8gd29yayB3aXRob3V0IGVycm9ycy4gTXkgYmlydGhkYXkgZmVsbCBvbiBhIFRodXJzZGF5IHRoaXMgeWVhci4gICANCmBgYA0KYGBge3J9DQp3ZGF5KGZpbmRfbXlfZGF5X2JpcnRoKHllYXI9MjAyNCxtb250aD01LGRheT0xNCksbGFiZWw9VFJVRSxhYmJyPUZBTFNFKQ0KICAjIFRIaXMgc3RpbGwgd29ya3MNCmBgYA0KYGBge3J9DQp3ZGF5KGZpbmRfbXlfZGF5X2JpcnRoKHllYXI9MjAyMCxtb250aD0xMCxkYXk9NSksbGFiZWw9VFJVRSxhYmJyPUZBTFNFKQ0KICAjIHVzaW5nIE1vbSdzIGJpcnRoZGF0ZSwgaXQgc3RpbGwgd29ya3MuICANCmBgYA0KYGBge3J9DQp3ZGF5KGZpbmRfbXlfZGF5X2JpcnRoKHllYXI9MjAyMCxtb250aD00LGRheT0yNiksbGFiZWw9VFJVRSxhYmJyPUZBTFNFKQ0KIyBNeSBzaXN0ZXJzIHN0aWxsIHdvcmtzLiAgU29ycnkgZm9yIGFsbCB0aGVzZSBleHRyYSBjb2RlIGNodW5rcy4gIA0KYGBgDQojIyMjIFdoYXQgZGF5IG9mIHRoZSB3ZWVrIHdvdWxkIHlvdXIgYmlydGhkYXkgYmUgb24gaW4gdGhlIFllYXIgMjUyNSwgaWYgTWFuIGlzIHN0aWxsIGFsaXZlPyBIb3cgb2xkIHdvdWxkIHlvdSBiZT8gSGVyZSB5b3UgbWF5IGhhcmQtY29kZSAyNTI1LiBTaG93IHRoZSBhYmJyZXZpYXRlZCBkYXkgb2YgdGhlIHdlZWsuDQpgYGB7cn0NCndkYXkodXBkYXRlKGJpcnRoX3RpbWUseWVhcj0yNTI1KSxsYWJlbD1UUlVFKQ0KIyBIYXJkIGNvZGUNCmBgYA0KYGBge3J9DQp3ZGF5KGZpbmRfbXlfZGF5X2JpcnRoKHllYXI9MjUyNSxtb250aD01LGRheT0xNCksbGFiZWw9VFJVRSkNCiMgVXNpbmcgbXkgZmluZF9teV9kYXlfYmlydGggZnVuY3Rpb24NCmBgYA0KIyMjIyBIb3cgbWFueSBkYXlzIHdhcyBpdCBiZXR3ZWVuIHRoZSBiaXJ0aCBvZiBEci4gRWxpemFiZXRoIEdhcnJldHQgQW5kZXJzb24gYW5kIEFsaWNlIEF1Z3VzdGEgQmFsbD8NCg==</div>
 
 
 
