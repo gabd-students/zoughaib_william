@@ -147,4 +147,15 @@ sort(diff_days,decreasing = TRUE)
 ```
 ***
 #### Part 2: Wrangling and plotting with dates
+```{r}
+lake_data <- read_csv(here("data","lake_ice.csv")) 
+lake_data
+# no where could i find how to drop -999.  I googled it and could not find anything concrete.  I decided to just remove the columns then.    
+```
+#### Wrangle
+```{r}
+
+```
+
+
 
