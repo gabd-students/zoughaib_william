@@ -253,11 +253,19 @@ river_events <- sum_river_data %>%
 river_events
 # I forgot to use c() with %in%.  
 ```
-#### Plot the mini data set: river_events
+#### Plot the mini data set: river_events over main sum_river_data set
 ```{r}
 ggplot(data=sum_river_data)+
-  geom_line(mapping=aes(x=Month,y=mean_discharge),size=0.3,color="grey70")
+  geom_line(mapping=aes(x=Month,y=mean_discharge,group=Year),size=0.3,color="grey70")+
+  geom_line(river_events,mapping = aes(Month,mean_discharge,group=Year,color=Event))+
+labs(x=NULL,
+     y="Discharge(cf/s,thousands)")
+# Remember to use group= or you will waste an hour trying to figure out how to include years in plot....
 ```
+
+
+***
+#### **THE END.  THIS TOOK FOREVER!!!  I FEEL REALLY DUMB SOMETIMES**
 
 
 
