@@ -228,7 +228,39 @@ facet_wrap(~Year)
 
 
 ***
-#### Import Plot 3 Mississippi River Discharge
+#### Import Plot 3 Mississippi River Discharge.  Wrangle: Add Year column by moving 1988:2018 using pivot_longer (creates more rows).  Add and then change Discharge column to show values divided by 1000
+```{r}
+river_data <- read_csv(here("data","thebes_discharge.csv"))
+thebes_river_data <- pivot_longer(river_data,"1988":"2018",names_to="Year",values_to = "Discharge") %>% 
+  mutate(Discharge=Discharge/1000)
+thebes_river_data
+```
+#### Group by Year and Month.  Summarize mean discharge.  Remember to use na.rm=TRUE.  Use Mutate and case_when for new column Event
+```{r}
+group_river_data <- group_by(thebes_river_data,Year,Month)
+sum_river_data <- summarise(group_river_data,mean_discharge=mean(Discharge,na.rm=TRUE),.groups='drop') %>% 
+  mutate(Event=case_when(
+    Year==1993|Year==2011 ~ "Flood",
+    Year==1988|Year==2012 ~ "Drought",
+    TRUE~"Normal")) %>% 
+  mutate(Month=month(Month,label=TRUE))
+sum_river_data
+```
+#### Second data set. Try and use %in% for years 1988,1993,2011,2012.  48 rows should appear 
+```{r}
+river_events <- sum_river_data %>% 
+  filter(Year%in%c(1988,1993,2011,2012))
+river_events
+# I forgot to use c() with %in%.  
+```
+#### Plot the mini data set: river_events
+```{r}
+ggplot(data=sum_river_data)+
+  geom_line(mapping=aes(x=Month,y=mean_discharge),size=0.3,color="grey70")
+```
+
+
+
 
 
 
