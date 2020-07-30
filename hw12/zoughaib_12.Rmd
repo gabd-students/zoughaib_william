@@ -11,8 +11,10 @@ library(tidyverse)
 library(here)
 library(lubridate)
 ```
+
+
 ***
-#### Part 1: Play Date (copied and pasted)
+### Part 1: Play Date (copied and pasted)
 ```{r}
 birth_date <- "05/14/1998"
 
@@ -145,17 +147,89 @@ leap_year(year)
 diff_days <- birth_time-all_birth_dates
 sort(diff_days,decreasing = TRUE)
 ```
+
+
 ***
-#### Part 2: Wrangling and plotting with dates
+### Part 2: Wrangling and plotting with dates
+
+
+***
+#### Import Plot 1 Lake Ice
 ```{r}
-lake_data <- read_csv(here("data","lake_ice.csv")) 
+lake_data <- read_csv(here::here("data","lake_ice.csv"),na="-999") %>% 
+drop_na()
 lake_data
 # no where could i find how to drop -999.  I googled it and could not find anything concrete.  I decided to just remove the columns then.    
 ```
-#### Wrangle
+#### Wrangle by selecting the iceon_... and iceoff_ columns.  Filter LAKE MENDOTA.  Create duration column.    
 ```{r}
-
+tidy_lake_data <- filter(lake_data,lakename=="LAKE MENDOTA") %>% 
+  select(c(iceon_year,iceon_month,iceon_day,iceoff_year,iceoff_month,iceoff_day)) %>% 
+  mutate(ice_on=make_date(iceon_year,iceon_month,iceon_day),
+         ice_off=make_date(iceoff_year,iceoff_month,iceoff_day),
+         duration=as.numeric(ice_off-ice_on))
+tidy_lake_data
 ```
+#### Plot with a line graph of duration v iceoff_year
+```{r}
+tidy_lake_data %>% 
+  ggplot()+
+  geom_line(aes(x=iceoff_year,y=duration),na.rm=TRUE)+
+  labs(x="Year",
+    y="Ice Duration (days)")
+# I think I got it.  
+```
+
+***
+#### Import Plot 2 Soil Carbon Dioxide
+```{r}
+soil_data <- read_tsv(here::here("data","soil_co2.txt"))
+soil_data
+```
+#### Make a POSIXct date for 01 January 2006
+```{r}
+soil_date <- dmy("01 January 2006")
+soil_date
+```
+#### Wrangle by renaming columns, creating a Date column, a Year column, a Month column
+```{r}
+soil_co2_data <- soil_data %>% 
+  rename("Day"=`DayN[]`,"Date_code"=`Datecode[]`,"Min"=`Min[]`,"Veg"=`Veg[]`,"Plot"=`Plot[]`,"Group"=`Group[]`,"Corr_CO2"=`CorrCO2[]`,"Soil_T"=`SoilT[]`) %>% 
+  mutate(Date=soil_date+Day,
+         Year=year(Date),
+         Month=month(Date,label=TRUE))
+soil_co2_data
+# Rename the columns by removing the [],
+```
+#### USe Group for Year and Month on soil_CO2_data. Summarize mean CO2 and use std_err function (i created this)
+```{r}
+source(here("scripts","my_functions.R"))
+```
+```{r}
+group_soil_data <- group_by(soil_co2_data,Year,Month)
+sum_soil_data <- summarise(group_soil_data,meanCO2=mean(Corr_CO2,na.rm = TRUE),std_err_CO2=std_err(Corr_CO2,na.rm=TRUE),.groups = 'drop')
+sum_soil_data
+```
+#### Plot with an errorbar over geom_col.  Use std_error with mean_CO2
+```{r}
+ggplot(data=sum_soil_data)+
+  geom_col(mapping=aes(x=Month,y=meanCO2))+
+  geom_linerange(aes(x=Month,ymin=meanCO2-std_err_CO2,ymax=meanCO2+std_err_CO2))+
+facet_wrap(~Year)
+# This looks ok
+```
+```{r}
+ggplot(data=sum_soil_data)+
+  geom_point(mapping=aes(x=Month,y=meanCO2))+
+  geom_linerange(aes(x=Month,ymin=meanCO2-std_err_CO2,ymax=meanCO2+std_err_CO2))+
+facet_wrap(~Year)
+# This again looks ok.  
+```
+
+
+***
+#### Import Plot 3 Mississippi River Discharge
+
 
 
 
