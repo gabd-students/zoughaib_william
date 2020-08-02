@@ -16,9 +16,30 @@ library(ggthemes)
 library(gghighlight)
 ```
 ***
-####
+#### Import the beta_gliadin data.  Then change from many strings to one.
 ```{r}
-beta_gliadin <- read_lines(here("data","beta_gliadin.txt"))
-beta_gliadin
+beta_gliadin <- read_lines(here("data","beta_gliadin.txt"),skip=1)
+# skip=1 skips first row
+DNA <- beta_gliadin %>% 
+  str_replace_all("\\d", "") %>% 
+  str_replace_all("\\s", "") %>% 
+  str_c(collapse="") %>% 
+  str_to_upper()
+DNA
+# \\d equals a digit; \\s equals space.  I removed all lines into one giant line.  Then I combined 
+```
+#### Find total length of DNA data
+```{r}
+str_length(DNA)
+# confirmed
+```
+#### Counting number of IUPAC letters using str_count.  Then count start codon of ATG, and stop codon of either TGA or TAA
+```{r}
+str_count(DNA,"A.C.T.G")
+# answer is 13
+str_count(DNA,"ATG")
+# answer is 66
+str_count(DNA, "TGA|TAA")
+# first answer I got was 0 because I had spaces before and after | .  Then I deleted them so real answer is 99.  Always double check what you put in the ""
 ```
 
