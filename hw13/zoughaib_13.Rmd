@@ -16,6 +16,7 @@ library(ggthemes)
 library(gghighlight)
 ```
 ***
+### Part 1
 #### Import the beta_gliadin data.  Then change from many strings to one.
 ```{r}
 beta_gliadin <- read_lines(here("data","beta_gliadin.txt"),skip=1)
@@ -35,11 +36,69 @@ str_length(DNA)
 ```
 #### Counting number of IUPAC letters using str_count.  Then count start codon of ATG, and stop codon of either TGA or TAA
 ```{r}
-str_count(DNA,"A.C.T.G")
-# answer is 13
+str_count(DNA,"[^A.C.T.G]")
+# answer is 0 as I am excluding A,C,G,T from the count
 str_count(DNA,"ATG")
 # answer is 66
 str_count(DNA, "TGA|TAA")
-# first answer I got was 0 because I had spaces before and after | .  Then I deleted them so real answer is 99.  Always double check what you put in the ""
+# first answer I got was 0 because I had spaces before and after | .  Then I deleted them so real answer is 99.  Always double check what you put in the "|"
+```
+#### Count number of CCAAT (CAAT box) and number of CTATAA(TATA box).  Make sure to assign them to caat_box and tata_box
+```{r}
+caat_box <- "CCAAT"
+tata_box <- "CTATAA"
+str_count(DNA,c(caat_box,tata_box))
+# officially 4 of caat_box and 1 of tata_box
+```
+#### Find caat_seq and tata_seq for CCAAT and CTATAA respectively.  Each of these ends with ATG.  
+```{r}
+caat_seq <- "CCAAT.{100,150}ATG"
+caat_seq
+str_count(DNA,caat_seq)
+tata_seq <- "CTATAA.{50,100}ATG"
+tata_seq
+str_count(DNA,tata_seq)
+# I correctly understood that .= filler characters.  But I did not know how to include the 100,150 and 50,100 respectively.  
+```
+#### Extract caat_seq and save in caat_seqs_all.  Use simplify=TRUE.  Find length.  
+```{r}
+caat_seqs_all <- str_extract_all(DNA,caat_seq,simplify = TRUE)
+caat_seqs_all
+str_length(caat_seqs_all)
+# Difference in length of both strands is 9 n.t.
+```
+#### Print promotor and determine length.  Promotor will have tata_box in the caat_seqs_all
+```{r}
+str_which(caat_seqs_all,tata_box)
+promotor <- str_sub(caat_seqs_all)
+promotor[1]
+str_length(promotor[1])
+# This took a while.  String is 139 n.t. and i think it matches.  
+```
+
+
+
+
+
+
+
+
+
+
+
+
+***
+### Part 2
+#### Import ants.csv
+```{r}
+ants_data <- read_csv(here("data","ants.csv")) 
+ants_data
+ants_data[1:6,]
+# imported data and selected first 6 rows.  I did not save it as it will skew graphing data.  
+```
+#### Wrangle ants_data
+```{r}
+ants_data %>% 
+  pivot_longer(names_to="species",values_to="abundance",matches("[:Upper:]...\\.[:lower:]"))
 ```
 

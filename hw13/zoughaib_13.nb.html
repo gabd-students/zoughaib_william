@@ -11,7 +11,7 @@
 
 <meta name="author" content="William Zoughaib" />
 
-<meta name="date" content="2020-08-01" />
+<meta name="date" content="2020-08-02" />
 
 <title>HW 13: Strings and things</title>
 
@@ -1747,7 +1747,7 @@ summary {
 
 <h1 class="title toc-ignore">HW 13: Strings and things</h1>
 <h4 class="author">William Zoughaib</h4>
-<h4 class="date">01 August 2020</h4>
+<h4 class="date">02 August 2020</h4>
 
 </div>
 
@@ -1768,6 +1768,8 @@ library(gghighlight)</code></pre>
 <!-- rnb-text-begin -->
 <hr />
 </div>
+<div id="part-1" class="section level3">
+<h3>Part 1</h3>
 <div id="import-the-beta_gliadin-data.-then-change-from-many-strings-to-one." class="section level4">
 <h4>Import the beta_gliadin data. Then change from many strings to one.</h4>
 <!-- rnb-text-end -->
@@ -1808,14 +1810,14 @@ DNA</code></pre>
 <h4>Counting number of IUPAC letters using str_count. Then count start codon of ATG, and stop codon of either TGA or TAA</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyX2NvdW50KEROQSxcIkEuQy5ULkdcIilcbmBgYCJ9 -->
-<pre class="r"><code>str_count(DNA,&quot;A.C.T.G&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyX2NvdW50KEROQSxcIlteQS5DLlQuR11cIilcbmBgYCJ9 -->
+<pre class="r"><code>str_count(DNA,&quot;[^A.C.T.G]&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEzXG4ifQ== -->
-<pre><code>[1] 13</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDBcbiJ9 -->
+<pre><code>[1] 0</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBhbnN3ZXIgaXMgMTNcbnN0cl9jb3VudChETkEsXCJBVEdcIilcbmBgYCJ9 -->
-<pre class="r"><code># answer is 13
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBhbnN3ZXIgaXMgMCBhcyBJIGFtIGV4Y2x1ZGluZyBBLEMsRyxUIGZyb20gdGhlIGNvdW50XG5zdHJfY291bnQoRE5BLFwiQVRHXCIpXG5gYGAifQ== -->
+<pre class="r"><code># answer is 0 as I am excluding A,C,G,T from the count
 str_count(DNA,&quot;ATG&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDY2XG4ifQ== -->
@@ -1828,15 +1830,150 @@ str_count(DNA, &quot;TGA|TAA&quot;)</code></pre>
 <!-- rnb-output-begin eyJkYXRhIjoiWzFdIDk5XG4ifQ== -->
 <pre><code>[1] 99</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmaXJzdCBhbnN3ZXIgSSBnb3Qgd2FzIDAgYmVjYXVzZSBJIGhhZCBzcGFjZXMgYmVmb3JlIGFuZCBhZnRlciB8IC4gIFRoZW4gSSBkZWxldGVkIHRoZW0gc28gcmVhbCBhbnN3ZXIgaXMgOTkuICBcbmBgYCJ9 -->
-<pre class="r"><code># first answer I got was 0 because I had spaces before and after | .  Then I deleted them so real answer is 99.  </code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBmaXJzdCBhbnN3ZXIgSSBnb3Qgd2FzIDAgYmVjYXVzZSBJIGhhZCBzcGFjZXMgYmVmb3JlIGFuZCBhZnRlciB8IC4gIFRoZW4gSSBkZWxldGVkIHRoZW0gc28gcmVhbCBhbnN3ZXIgaXMgOTkuICBBbHdheXMgZG91YmxlIGNoZWNrIHdoYXQgeW91IHB1dCBpbiB0aGUgXCJcIlxuYGBgIn0= -->
+<pre class="r"><code># first answer I got was 0 because I had spaces before and after | .  Then I deleted them so real answer is 99.  Always double check what you put in the &quot;&quot;</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="count-number-of-ccaat-caat-box-and-number-of-ctataatata-box.-make-sure-to-assign-them-to-caat_box-and-tata_box" class="section level4">
+<h4>Count number of CCAAT (CAAT box) and number of CTATAA(TATA box). Make sure to assign them to caat_box and tata_box</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FhdF9ib3ggPC0gXCJDQ0FBVFwiXG50YXRhX2JveCA8LSBcIkNUQVRBQVwiXG5zdHJfY291bnQoRE5BLGMoY2FhdF9ib3gsdGF0YV9ib3gpKVxuYGBgIn0= -->
+<pre class="r"><code>caat_box &lt;- &quot;CCAAT&quot;
+tata_box &lt;- &quot;CTATAA&quot;
+str_count(DNA,c(caat_box,tata_box))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQgMVxuIn0= -->
+<pre><code>[1] 4 1</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBvZmZpY2lhbGx5IDQgb2YgY2FhdF9ib3ggYW5kIDEgb2YgdGF0YV9ib3hcbmBgYCJ9 -->
+<pre class="r"><code># officially 4 of caat_box and 1 of tata_box</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="find-caat_seq-and-tata_seq-for-ccaat-and-ctataa-respectively.-each-of-these-ends-with-atg." class="section level4">
+<h4>Find caat_seq and tata_seq for CCAAT and CTATAA respectively. Each of these ends with ATG.</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FhdF9zZXEgPC0gXCJDQ0FBVC57MTAwLDE1MH1BVEdcIlxuY2FhdF9zZXFcbmBgYCJ9 -->
+<pre class="r"><code>caat_seq &lt;- &quot;CCAAT.{100,150}ATG&quot;
+caat_seq</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiQ0NBQVQuezEwMCwxNTB9QVRHXCJcbiJ9 -->
+<pre><code>[1] &quot;CCAAT.{100,150}ATG&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyX2NvdW50KEROQSxjYWF0X3NlcSlcbmBgYCJ9 -->
+<pre class="r"><code>str_count(DNA,caat_seq)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDJcbiJ9 -->
+<pre><code>[1] 2</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGF0YV9zZXEgPC0gXCJDVEFUQUEuezUwLDEwMH1BVEdcIlxudGF0YV9zZXFcbmBgYCJ9 -->
+<pre class="r"><code>tata_seq &lt;- &quot;CTATAA.{50,100}ATG&quot;
+tata_seq</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiQ1RBVEFBLns1MCwxMDB9QVRHXCJcbiJ9 -->
+<pre><code>[1] &quot;CTATAA.{50,100}ATG&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyX2NvdW50KEROQSx0YXRhX3NlcSlcbmBgYCJ9 -->
+<pre class="r"><code>str_count(DNA,tata_seq)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDFcbiJ9 -->
+<pre><code>[1] 1</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="extract-caat_seq-and-save-in-caat_seqs_all.-use-simplifytrue.-find-length." class="section level4">
+<h4>Extract caat_seq and save in caat_seqs_all. Use simplify=TRUE. Find length.</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FhdF9zZXFzX2FsbCA8LSBzdHJfZXh0cmFjdF9hbGwoRE5BLGNhYXRfc2VxLHNpbXBsaWZ5ID0gVFJVRSlcbmNhYXRfc2Vxc19hbGxcbmBgYCJ9 -->
+<pre class="r"><code>caat_seqs_all &lt;- str_extract_all(DNA,caat_seq,simplify = TRUE)
+caat_seqs_all</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICBbLDFdICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblsxLF0gXCJDQ0FBVFRHVEdBQUFHQUdBVENBVEdDQ0FUR0FDQUdDVEFUQUFBVEFHR0NDQ0dDQVRDR0FUR0FUR0FUQ0FUQ0NUVENDVENBVENDQVRDQVRUQ1RDQVRBQUdUQUdBR1RHQ0FUQ0FUVENBQUdHQ0FBR0NBQUdDQUdUR0dUQ0FBVEFDQUFBVENDQVRDQVRHXCJcbiAgICAgWywyXSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMSxdIFwiQ0NBQVRUVENHQ0FHQ0FBQ0FBR0NBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQ0FBQVRDQ1RUQ0FBQ0FBQVRUVFRHQ0FBQ0FBQ0FBQ1RHQVRUQ0NBVEdDQUdHR0FUR1RUR1RDVFRHQ0FBQ0FBQ0FDQUFDQVRBR0NHQ0FUR1wiXG4ifQ== -->
+<pre><code>     [,1]                                                                                                                                         
+[1,] &quot;CCAATTGTGAAAGAGATCATGCCATGACAGCTATAAATAGGCCCGCATCGATGATGATCATCCTTCCTCATCCATCATTCTCATAAGTAGAGTGCATCATTCAAGGCAAGCAAGCAGTGGTCAATACAAATCCATCATG&quot;
+     [,2]                                                                                                                                                  
+[1,] &quot;CCAATTTCGCAGCAACAAGCACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAAATCCTTCAACAAATTTTGCAACAACAACTGATTCCATGCAGGGATGTTGTCTTGCAACAACACAACATAGCGCATG&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyX2xlbmd0aChjYWF0X3NlcXNfYWxsKVxuYGBgIn0= -->
+<pre class="r"><code>str_length(caat_seqs_all)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEzOSAxNDhcbiJ9 -->
+<pre><code>[1] 139 148</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBEaWZmZXJlbmNlIGluIGxlbmd0aCBvZiBib3RoIHN0cmFuZHMgaXMgOSBuLnQuXG5gYGAifQ== -->
+<pre class="r"><code># Difference in length of both strands is 9 n.t.</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="print-promotor-and-determine-length.-promotor-will-have-tata_box-in-the-caat_seqs_all" class="section level4">
+<h4>Print promotor and determine length. Promotor will have tata_box in the caat_seqs_all</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyX3doaWNoKGNhYXRfc2Vxc19hbGwsdGF0YV9ib3gpXG5gYGAifQ== -->
+<pre class="r"><code>str_which(caat_seqs_all,tata_box)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDFcbiJ9 -->
+<pre><code>[1] 1</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJvbW90b3IgPC0gc3RyX3N1YihjYWF0X3NlcXNfYWxsKVxucHJvbW90b3JbMV1cbmBgYCJ9 -->
+<pre class="r"><code>promotor &lt;- str_sub(caat_seqs_all)
+promotor[1]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiQ0NBQVRUR1RHQUFBR0FHQVRDQVRHQ0NBVEdBQ0FHQ1RBVEFBQVRBR0dDQ0NHQ0FUQ0dBVEdBVEdBVENBVENDVFRDQ1RDQVRDQ0FUQ0FUVENUQ0FUQUFHVEFHQUdUR0NBVENBVFRDQUFHR0NBQUdDQUFHQ0FHVEdHVENBQVRBQ0FBQVRDQ0FUQ0FUR1wiXG4ifQ== -->
+<pre><code>[1] &quot;CCAATTGTGAAAGAGATCATGCCATGACAGCTATAAATAGGCCCGCATCGATGATGATCATCCTTCCTCATCCATCATTCTCATAAGTAGAGTGCATCATTCAAGGCAAGCAAGCAGTGGTCAATACAAATCCATCATG&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyX2xlbmd0aChwcm9tb3RvclsxXSlcbmBgYCJ9 -->
+<pre class="r"><code>str_length(promotor[1])</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEzOVxuIn0= -->
+<pre><code>[1] 139</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGlzIHRvb2sgYSB3aGlsZS4gIFN0cmluZyBpcyAxMzkgbi50LiBhbmQgaSB0aGluayBpdCBtYXRjaGVzLiAgXG5gYGAifQ== -->
+<pre class="r"><code># This took a while.  String is 139 n.t. and i think it matches.  </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<hr />
+</div>
+</div>
+<div id="part-2" class="section level3">
+<h3>Part 2</h3>
+<div id="import-ants.csv" class="section level4">
+<h4>Import ants.csv</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW50c19kYXRhIDwtIHJlYWRfY3N2KGhlcmUoXCJkYXRhXCIsXCJhbnRzLmNzdlwiKSkgXG5hbnRzX2RhdGFcbmFudHNfZGF0YVsxOjYsXVxuIyBpbXBvcnRlZCBkYXRhIGFuZCBzZWxlY3RlZCBmaXJzdCA2IHJvd3MuICBJIGRpZCBub3Qgc2F2ZSBpdCBhcyBpdCB3aWxsIHNrZXcgZ3JhcGhpbmcgZGF0YS4gIFxuYGBgIn0= -->
+<pre class="r"><code>ants_data &lt;- read_csv(here(&quot;data&quot;,&quot;ants.csv&quot;)) 
+ants_data
+ants_data[1:6,]
+# imported data and selected first 6 rows.  I did not save it as it will skew graphing data.  </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="wrangle-ants_data" class="section level4">
+<h4>Wrangle ants_data</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW50c19kYXRhICU+JSBcbiAgcGl2b3RfbG9uZ2VyKG5hbWVzX3RvPVwic3BlY2llc1wiLHZhbHVlc190bz1cImFidW5kYW5jZVwiLG1hdGNoZXMoXCJbOlVwcGVyOl0uLi5cXFxcLls6bG93ZXI6XVwiKSlcbmBgYCJ9 -->
+<pre class="r"><code>ants_data %&gt;% 
+  pivot_longer(names_to=&quot;species&quot;,values_to=&quot;abundance&quot;,matches(&quot;[:Upper:]...\\.[:lower:]&quot;))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
+</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkhXIDEzOiBTdHJpbmdzIGFuZCB0aGluZ3MiDQphdXRob3I6ICJXaWxsaWFtIFpvdWdoYWliIg0KZGF0ZTogImByIGZvcm1hdChTeXMudGltZSgpLCAnJWQgJUIgJVknKWAiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCmVkaXRvcl9vcHRpb25zOiANCiAgY2h1bmtfb3V0cHV0X3R5cGU6IGlubGluZQ0KLS0tDQoNCioqKg0KIyMjIyBMb2FkIHBhY2thZ2VzDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShoZXJlKQ0KbGlicmFyeShnZ3RoZW1lcykNCmxpYnJhcnkoZ2doaWdobGlnaHQpDQpgYGANCioqKg0KIyMjIyBJbXBvcnQgdGhlIGJldGFfZ2xpYWRpbiBkYXRhLiAgVGhlbiBjaGFuZ2UgZnJvbSBtYW55IHN0cmluZ3MgdG8gb25lLg0KYGBge3J9DQpiZXRhX2dsaWFkaW4gPC0gcmVhZF9saW5lcyhoZXJlKCJkYXRhIiwiYmV0YV9nbGlhZGluLnR4dCIpLHNraXA9MSkNCiMgc2tpcD0xIHNraXBzIGZpcnN0IHJvdw0KRE5BIDwtIGJldGFfZ2xpYWRpbiAlPiUgDQogIHN0cl9yZXBsYWNlX2FsbCgiXFxkIiwgIiIpICU+JSANCiAgc3RyX3JlcGxhY2VfYWxsKCJcXHMiLCAiIikgJT4lIA0KICBzdHJfYyhjb2xsYXBzZT0iIikgJT4lIA0KICBzdHJfdG9fdXBwZXIoKQ0KRE5BDQojIFxcZCBlcXVhbHMgYSBkaWdpdDsgXFxzIGVxdWFscyBzcGFjZS4gIEkgcmVtb3ZlZCBhbGwgbGluZXMgaW50byBvbmUgZ2lhbnQgbGluZS4gIFRoZW4gSSBjb21iaW5lZCANCmBgYA0KIyMjIyBGaW5kIHRvdGFsIGxlbmd0aCBvZiBETkEgZGF0YQ0KYGBge3J9DQpzdHJfbGVuZ3RoKEROQSkNCiMgY29uZmlybWVkDQpgYGANCiMjIyMgQ291bnRpbmcgbnVtYmVyIG9mIElVUEFDIGxldHRlcnMgdXNpbmcgc3RyX2NvdW50LiAgVGhlbiBjb3VudCBzdGFydCBjb2RvbiBvZiBBVEcsIGFuZCBzdG9wIGNvZG9uIG9mIGVpdGhlciBUR0Egb3IgVEFBDQpgYGB7cn0NCnN0cl9jb3VudChETkEsIkEuQy5ULkciKQ0KIyBhbnN3ZXIgaXMgMTMNCnN0cl9jb3VudChETkEsIkFURyIpDQojIGFuc3dlciBpcyA2Ng0Kc3RyX2NvdW50KEROQSwgIlRHQXxUQUEiKQ0KIyBmaXJzdCBhbnN3ZXIgSSBnb3Qgd2FzIDAgYmVjYXVzZSBJIGhhZCBzcGFjZXMgYmVmb3JlIGFuZCBhZnRlciB8IC4gIFRoZW4gSSBkZWxldGVkIHRoZW0gc28gcmVhbCBhbnN3ZXIgaXMgOTkuICBBbHdheXMgZG91YmxlIGNoZWNrIHdoYXQgeW91IHB1dCBpbiB0aGUgIiINCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkhXIDEzOiBTdHJpbmdzIGFuZCB0aGluZ3MiDQphdXRob3I6ICJXaWxsaWFtIFpvdWdoYWliIg0KZGF0ZTogImByIGZvcm1hdChTeXMudGltZSgpLCAnJWQgJUIgJVknKWAiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCmVkaXRvcl9vcHRpb25zOiANCiAgY2h1bmtfb3V0cHV0X3R5cGU6IGlubGluZQ0KLS0tDQoNCioqKg0KIyMjIyBMb2FkIHBhY2thZ2VzDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShoZXJlKQ0KbGlicmFyeShnZ3RoZW1lcykNCmxpYnJhcnkoZ2doaWdobGlnaHQpDQpgYGANCioqKg0KIyMjIFBhcnQgMQ0KIyMjIyBJbXBvcnQgdGhlIGJldGFfZ2xpYWRpbiBkYXRhLiAgVGhlbiBjaGFuZ2UgZnJvbSBtYW55IHN0cmluZ3MgdG8gb25lLg0KYGBge3J9DQpiZXRhX2dsaWFkaW4gPC0gcmVhZF9saW5lcyhoZXJlKCJkYXRhIiwiYmV0YV9nbGlhZGluLnR4dCIpLHNraXA9MSkNCiMgc2tpcD0xIHNraXBzIGZpcnN0IHJvdw0KRE5BIDwtIGJldGFfZ2xpYWRpbiAlPiUgDQogIHN0cl9yZXBsYWNlX2FsbCgiXFxkIiwgIiIpICU+JSANCiAgc3RyX3JlcGxhY2VfYWxsKCJcXHMiLCAiIikgJT4lIA0KICBzdHJfYyhjb2xsYXBzZT0iIikgJT4lIA0KICBzdHJfdG9fdXBwZXIoKQ0KRE5BDQojIFxcZCBlcXVhbHMgYSBkaWdpdDsgXFxzIGVxdWFscyBzcGFjZS4gIEkgcmVtb3ZlZCBhbGwgbGluZXMgaW50byBvbmUgZ2lhbnQgbGluZS4gIFRoZW4gSSBjb21iaW5lZCANCmBgYA0KIyMjIyBGaW5kIHRvdGFsIGxlbmd0aCBvZiBETkEgZGF0YQ0KYGBge3J9DQpzdHJfbGVuZ3RoKEROQSkNCiMgY29uZmlybWVkDQpgYGANCiMjIyMgQ291bnRpbmcgbnVtYmVyIG9mIElVUEFDIGxldHRlcnMgdXNpbmcgc3RyX2NvdW50LiAgVGhlbiBjb3VudCBzdGFydCBjb2RvbiBvZiBBVEcsIGFuZCBzdG9wIGNvZG9uIG9mIGVpdGhlciBUR0Egb3IgVEFBDQpgYGB7cn0NCnN0cl9jb3VudChETkEsIlteQS5DLlQuR10iKQ0KIyBhbnN3ZXIgaXMgMCBhcyBJIGFtIGV4Y2x1ZGluZyBBLEMsRyxUIGZyb20gdGhlIGNvdW50DQpzdHJfY291bnQoRE5BLCJBVEciKQ0KIyBhbnN3ZXIgaXMgNjYNCnN0cl9jb3VudChETkEsICJUR0F8VEFBIikNCiMgZmlyc3QgYW5zd2VyIEkgZ290IHdhcyAwIGJlY2F1c2UgSSBoYWQgc3BhY2VzIGJlZm9yZSBhbmQgYWZ0ZXIgfCAuICBUaGVuIEkgZGVsZXRlZCB0aGVtIHNvIHJlYWwgYW5zd2VyIGlzIDk5LiAgQWx3YXlzIGRvdWJsZSBjaGVjayB3aGF0IHlvdSBwdXQgaW4gdGhlICJ8Ig0KYGBgDQojIyMjIENvdW50IG51bWJlciBvZiBDQ0FBVCAoQ0FBVCBib3gpIGFuZCBudW1iZXIgb2YgQ1RBVEFBKFRBVEEgYm94KS4gIE1ha2Ugc3VyZSB0byBhc3NpZ24gdGhlbSB0byBjYWF0X2JveCBhbmQgdGF0YV9ib3gNCmBgYHtyfQ0KY2FhdF9ib3ggPC0gIkNDQUFUIg0KdGF0YV9ib3ggPC0gIkNUQVRBQSINCnN0cl9jb3VudChETkEsYyhjYWF0X2JveCx0YXRhX2JveCkpDQojIG9mZmljaWFsbHkgNCBvZiBjYWF0X2JveCBhbmQgMSBvZiB0YXRhX2JveA0KYGBgDQojIyMjIEZpbmQgY2FhdF9zZXEgYW5kIHRhdGFfc2VxIGZvciBDQ0FBVCBhbmQgQ1RBVEFBIHJlc3BlY3RpdmVseS4gIEVhY2ggb2YgdGhlc2UgZW5kcyB3aXRoIEFURy4gIA0KYGBge3J9DQpjYWF0X3NlcSA8LSAiQ0NBQVQuezEwMCwxNTB9QVRHIg0KY2FhdF9zZXENCnN0cl9jb3VudChETkEsY2FhdF9zZXEpDQp0YXRhX3NlcSA8LSAiQ1RBVEFBLns1MCwxMDB9QVRHIg0KdGF0YV9zZXENCnN0cl9jb3VudChETkEsdGF0YV9zZXEpDQojIEkgY29ycmVjdGx5IHVuZGVyc3Rvb2QgdGhhdCAuPSBmaWxsZXIgY2hhcmFjdGVycy4gIEJ1dCBJIGRpZCBub3Qga25vdyBob3cgdG8gaW5jbHVkZSB0aGUgMTAwLDE1MCBhbmQgNTAsMTAwIHJlc3BlY3RpdmVseS4gIA0KYGBgDQojIyMjIEV4dHJhY3QgY2FhdF9zZXEgYW5kIHNhdmUgaW4gY2FhdF9zZXFzX2FsbC4gIFVzZSBzaW1wbGlmeT1UUlVFLiAgRmluZCBsZW5ndGguICANCmBgYHtyfQ0KY2FhdF9zZXFzX2FsbCA8LSBzdHJfZXh0cmFjdF9hbGwoRE5BLGNhYXRfc2VxLHNpbXBsaWZ5ID0gVFJVRSkNCmNhYXRfc2Vxc19hbGwNCnN0cl9sZW5ndGgoY2FhdF9zZXFzX2FsbCkNCiMgRGlmZmVyZW5jZSBpbiBsZW5ndGggb2YgYm90aCBzdHJhbmRzIGlzIDkgbi50Lg0KYGBgDQojIyMjIFByaW50IHByb21vdG9yIGFuZCBkZXRlcm1pbmUgbGVuZ3RoLiAgUHJvbW90b3Igd2lsbCBoYXZlIHRhdGFfYm94IGluIHRoZSBjYWF0X3NlcXNfYWxsDQpgYGB7cn0NCnN0cl93aGljaChjYWF0X3NlcXNfYWxsLHRhdGFfYm94KQ0KcHJvbW90b3IgPC0gc3RyX3N1YihjYWF0X3NlcXNfYWxsKQ0KcHJvbW90b3JbMV0NCnN0cl9sZW5ndGgocHJvbW90b3JbMV0pDQojIFRoaXMgdG9vayBhIHdoaWxlLiAgU3RyaW5nIGlzIDEzOSBuLnQuIGFuZCBpIHRoaW5rIGl0IG1hdGNoZXMuICANCmBgYA0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KKioqDQojIyMgUGFydCAyDQojIyMjIEltcG9ydCBhbnRzLmNzdg0KYGBge3J9DQphbnRzX2RhdGEgPC0gcmVhZF9jc3YoaGVyZSgiZGF0YSIsImFudHMuY3N2IikpIA0KYW50c19kYXRhDQphbnRzX2RhdGFbMTo2LF0NCiMgaW1wb3J0ZWQgZGF0YSBhbmQgc2VsZWN0ZWQgZmlyc3QgNiByb3dzLiAgSSBkaWQgbm90IHNhdmUgaXQgYXMgaXQgd2lsbCBza2V3IGdyYXBoaW5nIGRhdGEuICANCmBgYA0KIyMjIyBXcmFuZ2xlIGFudHNfZGF0YQ0KYGBge3J9DQphbnRzX2RhdGEgJT4lIA0KICBwaXZvdF9sb25nZXIobmFtZXNfdG89InNwZWNpZXMiLHZhbHVlc190bz0iYWJ1bmRhbmNlIixtYXRjaGVzKCJbOlVwcGVyOl0uLi5cXC5bOmxvd2VyOl0iKSkNCmBgYA0KDQo=</div>
 
 
 
