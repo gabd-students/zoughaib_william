@@ -75,18 +75,6 @@ promotor[1]
 str_length(promotor[1])
 # This took a while.  String is 139 n.t. and i think it matches.  
 ```
-
-
-
-
-
-
-
-
-
-
-
-
 ***
 ### Part 2
 #### Import ants.csv
@@ -98,7 +86,76 @@ ants_data[1:6,]
 ```
 #### Wrangle ants_data
 ```{r}
-ants_data %>% 
-  pivot_longer(names_to="species",values_to="abundance",matches("[:Upper:]...\\.[:lower:]"))
+ants_tidy <- ants_data %>% 
+  pivot_longer(names_to="species",values_to="abundance",matches("([A-Z]).+\\..+",ignore.case = FALSE)) %>% 
+  select(!(season:sample))
+ants_tidy
+# This is a hard assignment.  I dont even know if this is correct.  I for sure did remove season:sample columns
 ```
+
+
+```{r}
+ants_mut <- ants_tidy %>% mutate(species=str_replace(species,"([A-Z].{3}).+\\.([a-z]{1,4}).*","\\1\\2")) %>% 
+  mutate(year = factor(year,ordered=TRUE,levels=c(2010,2011))) %>%
+   group_by(year, species) %>%
+   summarise(total = sum(abundance))
+ants_mut
+# so apparently all i needed was a dang * to add...otherwise everything was right... what wasted time...
+```
+#### Plot ants_data
+```{r}
+ants_mut %>% 
+  ggplot(aes(x=reorder(species,total),y=total,group=species))+
+  geom_line(color="grey")+
+  geom_point(aes(shape=year),size=2)+
+  coord_flip()+
+labs(x=NULL,y="Total Abundance",shape="Year")
+theme_minimal()  
+# I guess I got it right...
+```
+***
+### Part 3
+#### Import flowers_rough using read_csv
+```{r}
+flowers_rough <- read_csv(here("data","flower_size.csv")) 
+flowers_rough 
+```
+#### Wrangle
+```{r}
+flowers_data <- flowers_rough %>% 
+  drop_na("Flower number") %>% 
+  select("species"=Species,"cor_length"=`Corolla length (cm)`,"throat_width"=`Corolla width throat (cm)`) %>% 
+  separate(species,into=c("genus","species"),sep = " ") %>%   group_by(genus,species) %>% 
+  summarise(mean_length=mean(cor_length,na.rm = TRUE),
+            mean_width=mean(throat_width,na.rm = TRUE),
+            max_length=max(cor_length,na.rm = TRUE),
+            max_width=max(throat_width,na.rm = TRUE),.groups='drop') 
+flowers_data
+# rename columns using select, drop_na(),seperate Genus Species, then of course use group_by and summarise together.  
+```
+#### Import second data set into pollinators_raw
+```{r}
+pollinators_raw <- read_csv(here("data","flower_pollinators.csv"))
+pollinators_raw
+```
+#### Wrangle
+```{r}
+pollinators_data <- pollinators_raw %>% 
+  select(-(Color|starts_with("Source"))) %>% 
+  drop_na("Pollinator") %>% 
+  separate(Species,into = c("genus","species"),sep = " ") %>% 
+  separate(Pollinator,into="Syndrome",sep=" ")
+pollinators_data
+# This looks ok. I dropped NAs, removed color and Source_ columns.  Separated (need to spell that correctly) Species into genus and species.  Pollinator into Syndrome.  Nice and Tidy
+```
+#### Use inner join.  
+```{r}
+phlox <- inner_join(flowers_data,pollinators_data,by=c("genus","species"))
+phlox
+# Had to mess around with this for a bit.  NAs kept showing up.  Had to ultimately add na.rm to all the summarise arguments.  
+```
+
+
+
+
 
