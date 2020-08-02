@@ -1,0 +1,24 @@
+---
+title: "HW 13: Strings and things"
+author: "William Zoughaib"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+***
+#### Load packages
+```{r}
+library(tidyverse)
+library(here)
+library(ggthemes)
+library(gghighlight)
+```
+***
+####
+```{r}
+beta_gliadin <- read_lines(here("data","beta_gliadin.txt"))
+beta_gliadin
+```
+
