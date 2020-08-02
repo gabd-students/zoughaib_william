@@ -2,20 +2,19 @@
 ## Two Functions
 
 
-library(tidyverse)
+
 
 ### Creating my std_err function
 ####calculate standard error of the mean
 #### chosen vector family_ages plus a dog <- c(51,51,22,20,5).  will be replacing vector with family_ages
 #### Second argument will be to remove or keep NA.  (Default is false)
-family_ages <- c(51,51,22,20,5)
 
-std_error <- function(vector,na.rm=FALSE){   #function argument tells R that we are creating a function
-  ifelse(na.rm,
-         vector <- na.omit(vector),          #na.rm is always default.  
-         vector)
-  (sd(vector)/sqrt(length(vector)))}         # actually formula to obtain std_error
-
+std_err <- function(vector, na.rm = FALSE)     {
+    ifelse(na.rm, vector <-
+             na.omit(vector),
+           vector)
+    (sd(vector) / sqrt(length(vector)))
+  }                                     
 
 
 
