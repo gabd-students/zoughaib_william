@@ -1,0 +1,22 @@
+---
+title: "HW 14: Maps"
+author: "William Zoughaib"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+```{r}
+library(here)
+library(raster)
+library(sf)
+library(tidyverse)
+library(ggthemes)
+library(patchwork)
+library(maptools)
+library(ggmap)
+library(marmap)
+```
+***
+### Part 1: Outline maps
+
