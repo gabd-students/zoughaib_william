@@ -144,9 +144,9 @@ pollinators_data <- pollinators_raw %>%
   select(-(Color|starts_with("Source"))) %>% 
   drop_na("Pollinator") %>% 
   separate(Species,into = c("genus","species"),sep = " ") %>% 
-  separate(Pollinator,into="Syndrome",sep=" ")
+  separate(Pollinator,into="Syndrome",sep=",| ",extra="drop")
 pollinators_data
-# This looks ok. I dropped NAs, removed color and Source_ columns.  Separated (need to spell that correctly) Species into genus and species.  Pollinator into Syndrome.  Nice and Tidy
+# This looks ok. I dropped NAs, removed color and Source_ columns.  Separated (need to spell that correctly) Species into genus and species.  Pollinator into Syndrome.  By sep=",| " i am removing , and spaces from the carriers.  Nice and Tidy
 ```
 #### Use inner join.  
 ```{r}
@@ -154,7 +154,177 @@ phlox <- inner_join(flowers_data,pollinators_data,by=c("genus","species"))
 phlox
 # Had to mess around with this for a bit.  NAs kept showing up.  Had to ultimately add na.rm to all the summarise arguments.  
 ```
+####Plot
+```{r}
+phlox %>% 
+  ggplot(aes(x=mean_length,y=mean_width,color=Syndrome))+
+  geom_point()+
+  labs(x="Mean length",y="Mean width")
+# First plot looks ok.  I have 11 carriers.  adjusted x and y axis names
+```
+#### Drop bee and beetle and convert into bees and beetles respectively
+```{r}
+phlox_mut <- phlox %>% 
+  mutate(Syndrome=str_replace(Syndrome,"(^be.*e$)", "\\1s"))
+phlox_mut
+# I presume this is correct?
+```
+#### Replot; Count
+```{r}
+phlox_mut %>% 
+  ggplot(aes(x=mean_length,y=mean_width,color=Syndrome))+
+  geom_point()+
+  labs(x="Mean length",y="Mean width")
+# I now have 9 pollen carriers
+phlox_mut %>% 
+  group_by(Syndrome) %>% 
+  count(Syndrome)
+```
+#### Lumb beetles and flies as other insects: replot.  
+```{r}
+mut_phlox <- phlox_mut %>% 
+  mutate(Syndrome=str_replace(Syndrome,".+l.?es","other insects"))
+mut_phlox %>% 
+  ggplot(aes(x=mean_length,y=mean_width,color=Syndrome))+
+  geom_point()+
+  labs(x="Mean length",y="Mean width")
+# Similar and now 8 carriers
+```
+#### Use mutate w/ case_when to create syndrome_group column.  autogamous becomes Autogamous, bat to Mammal, hummingbird to Bird, everthing else to Insect.  Then plot
+```{r}
+phlox_data <- mut_phlox %>% 
+  mutate(syndrome_group=case_when(Syndrome=="autogamous"~"Autogamous",Syndrome=="bat"~"Mammal",Syndrome=="hummingbird"~"Bird",TRUE~"Insect"))
+phlox_data
+# Dang, this is hard.  But i created a syndrome_group column.  Syndrome names will match whatever is next to it in syndrome_group
+phlox_data %>% 
+  ggplot(aes(x=mean_length,y=mean_width,color=syndrome_group))+
+  geom_point()+
+  labs(x="Mean length",y="Mean width",color="Syndrome")
+# It was never mentioned in the directions but I presume we are use color=syndrome_group now.  It looks correct if so.  
+```
+#### GGhighlight
+```{r}
+phlox_data %>% 
+  ggplot(aes(x=mean_length,y=mean_width,color=syndrome_group))+
+  geom_point()+
+  labs(x="Mean length",y="Mean width",color="Syndrome")+
+  gghighlight(syndrome_group=="Mammal"|syndrome_group=="Bird",use_direct_label = FALSE)
+# Interesting.  I forgot to do syndrome_group=="Bird" with |.   
+```
+#### Improvements: colors and themes
+```{r}
+phlox_data %>% 
+  ggplot(aes(x=mean_length,y=mean_width,color=syndrome_group))+
+  geom_point()+
+  scale_color_brewer(type = "qual", palette = "Dark2") +
+  labs(x = "Mean Length (cm)",
+       y = "Mean Width (cm)",
+       color = "Syndrome")
+# using scale_color_brewer
+```
+#### Using SEMO colors (who woulda thunk it)
+```{r}
+semo_palette <- c("#C8102E", "#DBE245", "#71C5E8", "#B07C57")
 
+phlox_data %>% 
+  ggplot() +
+  geom_point(aes(x = mean_length,
+                 y = mean_width,
+                 shape = syndrome_group,
+                 fill = syndrome_group)) +
+  scale_shape_manual(values = c(22:25)) +
+  scale_fill_manual(values = semo_palette) +
+  labs(x = "Mean Length (cm)",
+       y = "Mean Width (cm)",
+       shape = "Syndrome",
+       fill = "Syndrome")
+# copied and pasted
+```
+#### changing the lettering...
+```{r}
+phlox_data %>% 
+  ggplot() +
+  geom_point(aes(x = mean_length,
+                 y = mean_width,
+                 shape = syndrome_group,
+                 fill = syndrome_group),
+             size = 2) +
+  labs(shape = "Syndrome",
+       fill = "Syndrome",
+       x = "Mean Length (cm)",
+       y = "Mean Width (cm)") +
+  theme_tufte() +
+  scale_shape_manual(values = c(22:25)) +
+  scale_fill_brewer(palette = "Dark2") +
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12))
+# There are over 20-25 different themes?  I presume this means font...
+```
+```{r}
+phlox_data %>% 
+  ggplot() +
+  geom_point(aes(x = mean_length,
+                 y = mean_width,
+                 shape = syndrome_group,
+                 fill = syndrome_group),
+             size = 2) +
+  labs(shape = "Syndrome",
+       fill = "Syndrome",
+       x = "Mean Length (cm)",
+       y = "Mean Width (cm)") +
+  theme_economist () +
+  scale_shape_manual(values = c(22:25)) +
+  scale_fill_brewer(palette = "Dark2") +
+  theme(axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12))
+# playing around but this is really ugly...
+```
+***
+#### Part 4: 4 plots
+```{r}
+phlox_data %>% 
+  ggplot(aes(x=max_length,y=max_width,shape=syndrome_group,fill=syndrome_group))+
+  geom_point()+
+  labs(x="Max Length (cm)",y="Max Width (cm)",shape="Syndrome",fill="Syndrome")+
+  theme_classic()+
+  scale_shape_manual(values=c(22:25))+
+  scale_fill_brewer(palette="Dark2")
+```
+```{r}
+phlox_data %>% 
+  ggplot(aes(x=max_length,y=max_width,shape=syndrome_group,fill=syndrome_group))+
+  geom_point()+
+  labs(x="Max Length (cm)",y="Max Width (cm)",shape="Syndrome",fill="Syndrome")+
+  theme_economist()+
+  scale_shape_manual(values=c(22:25))+
+  scale_fill_brewer(palette="Dark2")
+```
+```{r}
+library(viridis)
+```
+```{r}
+phlox_data %>% 
+  ggplot(aes(x=max_length,y=max_width,shape=syndrome_group,fill=syndrome_group))+
+  geom_point()+
+  labs(x="Max Length (cm)",y="Max Width (cm)",shape="Syndrome",fill="Syndrome")+
+  theme_bw()+
+  scale_shape_manual(values=c(22:25))+
+  scale_fill_viridis_d(option = "magma")
+```
+```{r}
+library(viridis)
+```
+```{r}
+phlox_data %>% 
+  ggplot(aes(x=max_length,y=max_width,shape=syndrome_group,fill=syndrome_group))+
+  geom_point()+
+  labs(x="Max Length (cm)",y="Max Width (cm)",shape="Syndrome",fill="Syndrome")+
+  theme_tufte ()+
+  scale_shape_manual(values=c(22:25))+
+  scale_fill_viridis_d(option = "viridis")
+```
+***
+#### THE END FINALLY HOURS AND HOURS LATER
 
 
 
