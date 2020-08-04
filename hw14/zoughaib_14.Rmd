@@ -83,4 +83,112 @@ mo_map
 us_map+mo_map+plot_layout(nrow=1,widths=c(1.5,1))
 # I like it.  Much easier than yesterday
 ```
-
+***
+#### Utah map
+```{r}
+utah <- map_data("county","utah")
+ut_washington <- subset(utah,subregion%in% ("washington"))
+# Heard that St. George has amazing training grounds, I really want to go
+ut_weber <- subset(utah,subregion%in%("weber"))
+# First initial of name is William.  Ogden would be cool to visit as well.  
+ut_salt_lake <- subset(utah,subregion%in%c("salt lake"))
+# Middle name is Simon so S; Id like to float
+# Utah is cool
+ut_map <- ggplot()+
+  geom_polygon(data=utah,aes(x=long,y=lat,group=group),fill=NA,color="black")+
+  geom_polygon(data=ut_washington,aes(x=long,y=lat,group=group),fill="black")+
+  geom_polygon(data=ut_weber,aes(x=long,y=lat,group=group),fill="grey")+
+  geom_polygon(data=ut_salt_lake,aes(x=long,y=lat,group=group),fill="grey")+
+  theme_map()+
+  coord_fixed(1.3)
+ut_map
+```
+***
+### Part 2
+***
+#### Skin cancer mortality
+```{r}
+skin_cancer_raw <- read_delim(file=here::here("data","skin_cancer.txt"),
+                              delim = " ",
+                              skip=7,
+                              trim_ws = TRUE)
+skin_cancer_raw
+```
+#### Tidy
+```{r}
+skin_cancer <- skin_cancer_raw %>% 
+  filter(State!="Wash,D.C.") %>% 
+  mutate(State=case_when(State=="NorthCarolina"~"North Carolina",
+                        State == "SouthCarolina" ~ "South Carolina",
+    State == "NorthDakota" ~ "North Dakota",
+    State == "SouthDakota" ~ "South Dakota",
+    State == "NewHampshire" ~ "New Hampshire",
+    State == "NewJersey" ~ "New Jersey",
+    State == "NewMexico" ~ "New Mexico",
+    State == "MewYork" ~ "New York", 
+    State == "RhodeIsland" ~ "Rhode Island",
+    State == "WestVirginia" ~ "West Virginia",
+    TRUE ~ State
+  ))
+skin_cancer
+# changing state data to proper names
+```
+#### Calculate mean_mort,add relative_mort column.  Create new dataset with skin_cancer_adj
+```{r}
+mean_mort <- mean(skin_cancer$Mort)
+skin_cancer_adj <- skin_cancer %>% 
+  mutate(relative_mort=Mort-mean_mort)
+skin_cancer_adj
+```
+#### Trim Alaska,Hawaii,and territorries
+```{r}
+lower_48 <- c("Alabama","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming")
+lower_48
+```
+#### Import cb_2017...500k.shp
+```{r}
+states <- st_read(here::here("data/shape_files","cb_2017_us_state_500k.shp"),stringsAsFactors = TRUE)
+# looks ok so far, misspelled state first time around :/
+```
+#### add lower_48 vector to states file,use states_df
+```{r}
+states_df <- states %>% 
+  dplyr::filter(NAME%in%lower_48)
+states_df
+```
+#### Use STATEFP with str()
+```{r}
+str(states_df$STATEFP)
+# looks ok so far
+```
+#### Capture FIPS levels from states_df; use factor for FIPS and state names 
+```{r}
+state_levels <- levels(states_df$STATEFP)
+name_levels <- levels(states_df$NAME)
+```
+#### Import state FIPS csv and add previously named levels vectors
+```{r}
+fips <- read_csv(here::here("data","state_fips.csv")) %>% 
+  dplyr::select(-abbr) %>% 
+  rename(STATEFP=FIPS) %>% 
+  mutate(STATEFP=factor(STATEFP,levels = state_levels))
+fips
+```
+#### Use left join for skin_cancer,fips & states_df,skin_cancer(renamed)
+```{r}
+skin_cancer_all <- left_join(skin_cancer_adj,fips)
+states_df_all <- left_join(states_df,skin_cancer_all)
+# states_df_all is our final plotting data frame
+```
+```{r}
+ggplot(states_df_all)+
+  geom_sf(aes(fill=relative_mort))+
+  scale_fill_viridis_c(name="Skin Cancer,\nRelative Mortality",
+                       option="inferno")+
+  coord_sf(crs=st_crs(5070))+
+  theme_bw()+
+  theme(legend.position = "bottom")
+# This is honestly amazing!
+```
+***
+#### Chloropleth map: your turn
