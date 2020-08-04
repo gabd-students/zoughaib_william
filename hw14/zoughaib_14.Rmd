@@ -195,8 +195,9 @@ ggplot(states_df_all)+
 ```{r}
 lyme_disease_raw <- read_csv(here::here("data","lyme_disease.csv"),
        skip=1,
-       na=("-")) %>% 
+       na=("-"))%>%
   drop_na()
+  
 lyme_disease_raw
 ```
 #### Tidy
@@ -351,4 +352,130 @@ base_species+geom_point(data=both_species,
 ```
 ***
 ### Part 4 Bathymetry
+***
+#### Example: Fiji earthquakes
+#### I have a Dell laptop so Windows :/.  Starting with conferting km to feet
+```{r}
+min_long <- -170
+max_long <- 164
+min_lat <- -42
+max_lat <- -8
 
+earthquakes <- quakes %>% 
+  mutate(depth=depth*3280.84)
+earthquakes
+```
+#### Run Fiji with NOAA bathyl  
+```{r}
+library(rgdal)
+```
+```{r}
+memory.limit(24000)
+fiji <- getNOAA.bathy(lon1=min_long,
+                      lon2=max_long,
+                      lat1=min_lat,
+                      lat2=max_lat,
+                      antimeridian=TRUE,
+                      keep=TRUE)
+```
+```{r}
+autoplot.bathy(fiji,
+               geom=c("raster","contour"),
+               size=0.1,
+               na.rm=TRUE)
+```
+#### Edit
+```{r}
+autoplot(fiji,
+         geom=c("raster","contour"),
+         size=0.1,
+         na.rm=TRUE)+
+  scale_fill_gradient2(low="dodgerblue4",
+                       mid="gainsboro",
+                       high="darkgreen",
+                       name="Depth (ft)")+
+  labs(x="Longitude",y="Latitude")+
+  theme(axis.title.y=element_text(angle=0,
+                                  vjust=0.5))
+```
+#### Save to base_map with autoplot; add quakes data to base_map then
+```{r}
+base_map <- autoplot(fiji,
+         geom=c("raster","contour"),
+         size=0.1,
+         na.rm=TRUE)+
+  scale_fill_gradient2(low="dodgerblue4",
+                       mid="gainsboro",
+                       high="darkgreen",
+                       name="Depth (ft)")+
+  labs(x="Longitude",y="Latitude")+
+  theme(axis.title.y=element_text(angle=0,
+                                  vjust=0.5))
+```
+```{r}
+base_map+
+  geom_point(data=earthquakes,aes(x=long,y=lat))
+# I feel like a real oceanographer
+```
+#### plot looks rough, so distinguish by magnitude
+```{r}
+base_map+
+  geom_point(data=earthquakes,aes(x=long,y=lat,size=mag),
+             alpha=0.4)
+# View looks horrible with this.  
+```
+#### Change scale size to something more manageable and does not look blotty
+```{r}
+base_map+
+  geom_point(data=earthquakes,aes(x=long,y=lat,size=mag),
+             alpha=0.4)+
+scale_size_continuous(range=c(0.5,3),name="Magnitude")
+# Much better now, but view is terrible...
+```
+***
+#### My Turn with bathymetry
+#### load blennies.csv & use getNOAA.bathy(); set long, lat values
+```{r}
+min_long.1 <- -90
+max_long.1 <- -58
+min_lat.1 <- 8
+max_lat.1 <- 28
+
+blennies <- read_csv(here::here("data","blennies.csv"))
+blennies
+```
+#### run getNOAA.bathy for carib_sea
+```{r}
+memory.limit(25000)
+carib_sea <- getNOAA.bathy(lon1=min_long.1,
+                      lon2=max_long.1,
+                      lat1=min_lat.1,
+                      lat2=max_lat.1,
+                      antimeridian=FALSE,
+                      keep=TRUE)
+```
+```{r}
+base_map_carib <- autoplot(carib_sea,
+               geom=c("raster","contour"),
+               size=0.1,
+               na.rm=TRUE)+
+  labs(x="Longitude",
+       y="Latitude")+
+  scale_fill_etopo(guide=FALSE)+
+  theme(axis.title.y=element_text(angle=0,
+                                  vjust=0.5))
+base_map_carib
+# Took me a while to edit this, scrolling back and forth sometimes forces mistakes...
+```
+#### Add blennies to base_map_carib
+```{r}
+base_map_carib+
+  geom_point(data=blennies,aes(x=long,y=lat,color=name,shape=name),size=2.2,fill="white")+
+  scale_shape_manual(values=c(21:23))+
+  labs(color="Species",shape="Species")+
+  theme(legend.position = "bottom")+
+  theme(legend.text=element_text(face="italic"))
+# decided to keep color=name because I liked the outline of it.  
+```
+***
+### THE END!!! ONE MORE ASSIGNMENT TO GO!!!
