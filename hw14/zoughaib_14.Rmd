@@ -191,4 +191,164 @@ ggplot(states_df_all)+
 # This is honestly amazing!
 ```
 ***
-#### Chloropleth map: your turn
+#### Chloropleth map: your turn (Import lyme disease)
+```{r}
+lyme_disease_raw <- read_csv(here::here("data","lyme_disease.csv"),
+       skip=1,
+       na=("-")) %>% 
+  drop_na()
+lyme_disease_raw
+```
+#### Tidy
+```{r}
+lyme_disease_data <- lyme_disease_raw %>% 
+  mutate(`2017`=`2017_Confirmed`+`2017_Probable`) %>% 
+  select(-c("2017_Confirmed","2017_Probable")) %>% 
+  pivot_longer("2007":"2017",names_to="Year",values_to="Cases") %>% 
+  group_by(State) %>% 
+  summarise(Mean_cases=mean(Cases),
+            Log_mean=log(Mean_cases),.groups="drop")
+lyme_disease_data
+```
+#### Use left join now: Plot
+```{r}
+lyme_disease_all <- left_join(lyme_disease_data,fips)
+lyme_states <- left_join(states_df,lyme_disease_all)
+```
+```{r}
+lyme_states %>% 
+  ggplot()+
+  geom_sf(aes(fill=Log_mean))+
+  scale_fill_viridis_c(name="Lyme Disease\nMean Cases",option="viridis",labels=c("<1","10","100","1000","5000"))+
+  coord_sf(crs=st_crs(5070))+
+  theme_bw()+
+  theme(legend.position = "left")
+# Got it, except for the legend being stretched when at the bottom.  so i changed it.  I like it more than the following graph
+```
+```{r}
+lyme_states %>% 
+  ggplot()+
+  geom_sf(aes(fill=Log_mean))+
+  scale_fill_viridis_c(name="Lyme Disease\nMean Cases",option="viridis",labels=c("<1","10","100","1000","5000"))+
+  coord_sf(crs=st_crs(5070))+
+  theme_bw()+
+  theme(legend.position = "bottom")
+# Actual graph from assignment.  
+```
+***
+### Part 3: Dot distribution maps
+***
+#### Example: Distribution of _Gigantopithecus_ and _Ursus_
+
+####set.seed & load bigfoot
+```{r}
+min_long <- -126
+max_long <- -104
+min_lat <- 31
+max_lat <- 50
+set.seed(9618973)
+
+bigfoot_raw <- read_csv(here::here("data","bigfoot.csv"))
+bigfoot_data <- bigfoot_raw %>% 
+  filter(long>=min_long&long<=max_long,
+         lat>=min_lat&lat<=max_lat) %>% 
+  sample_n(300) %>% 
+  mutate(name="Gigantopithecus") %>% 
+  dplyr::select(name,long,lat)
+bigfoot_data
+```
+#### Load bears and bind, find head
+```{r}
+bears <- read_csv(here::here("data","bears.csv"))
+both_species <- bind_rows(bigfoot_data,bears)
+head(both_species)
+```
+#### Find tail of both_species
+```{r}
+tail(both_species)
+```
+#### upload Stamen Maps
+```{r}
+base=get_stamenmap(bbox=c(min_long,min_lat,max_long,max_lat),
+                   zoom=4,
+                   maptype="terrain-background")
+ggmap(base)
+# Good so far
+```
+#### Add bigfoot_data to base
+```{r}
+base_bigfoot <- ggmap(base)
+base_bigfoot+geom_point(data=bigfoot_data,
+                aes(x=long,
+                    y=lat))
+```
+#### Now do it for bears
+```{r}
+base_bears <- ggmap(base)
+base_bears+geom_point(data=bears,aes(x=long,y=lat))
+```
+#### Now combine it with both_species
+```{r}
+base_species <- ggmap(base)
+base_species+geom_point(data=both_species,
+                    aes(x=long,
+                        y=lat,
+                        shape=name,
+                        fill=name),
+                    size=2)+
+  scale_shape_manual(values=c(22:23))+
+  labs(x="Longitude",
+       y="Latitude",
+       fill="Species",
+       shape="Species")
+# For some reason I type + instead of =...
+# This looks ok.  
+```
+***
+#### Set seed
+```{r}
+min_long <- -126
+max_long <- -104
+min_lat <- 31
+max_lat <- 50
+set.seed(1971148)
+```
+#### One giant code chunk
+```{r}
+bigfoot_raw <- read_csv(here::here("data","bigfoot.csv"))
+bigfoot_data <- bigfoot_raw %>% 
+  filter(long>=min_long&long<=max_long,
+         lat>=min_lat&lat<=max_lat) %>% 
+  sample_n(300) %>% 
+  mutate(name="Gigantopithecus") %>% 
+  dplyr::select(name,long,lat)
+bears <- read_csv(here::here("data","bears.csv"))
+both_species <- bind_rows(bigfoot_data,bears)
+head(both_species)
+base=get_stamenmap(bbox=c(min_long,min_lat,max_long,max_lat),
+                   zoom=4,
+                   maptype="terrain-background")
+ggmap(base)
+base_bigfoot <- ggmap(base)
+base_bigfoot+geom_point(data=bigfoot_data,
+                aes(x=long,
+                    y=lat))
+base_bears <- ggmap(base)
+base_bears+geom_point(data=bears,aes(x=long,y=lat))
+base_species <- ggmap(base)
+base_species+geom_point(data=both_species,
+                    aes(x=long,
+                        y=lat,
+                        shape=name,
+                        fill=name),
+                    size=2)+
+  scale_shape_manual(values=c(22:23))+
+  labs(x="Longitude",
+       y="Latitude",
+       fill="Species",
+       shape="Species")
+# It changed now, before it looked just like the previous ggplot so I add all previous codes to make it different.  
+```
+***
+### Part 4 Bathymetry
+
