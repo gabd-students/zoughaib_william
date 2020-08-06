@@ -48,8 +48,7 @@ covid_deaths
 #### county populations
 raw_county_pop <- read_csv(here::here("data","covid_county_population_usafacts.csv"))
 covid_county_pop <- raw_county_pop %>% 
-  filter(countyFIPS!=0) %>% 
-  rename("County_Name"=`County Name`)
+  filter(countyFIPS!=0) 
 covid_county_pop
 #### SEMO enrollment
 raw_SEMO <- read_csv(here::here("data","semo_county_enrollment.csv"),skip=1)
@@ -84,7 +83,7 @@ plot_deaths <- CoVid_region_data %>%
   theme_test()+
   theme(legend.position = "none")
 plot_cases+plot_deaths+plot_layout(ncol=2)
-#### Done
+## Done
 
 # Plot 2  -----------------------------------------------------------------
 MO_CoVid_Cases <- covid_positive %>% 
@@ -95,7 +94,7 @@ MO_CoVid_Cases <- covid_positive %>%
   summarise(total_confirmed=sum(cases,na.rm=TRUE),.groups='drop') %>% 
   rename("County"=`County Name`)
 view(MO_CoVid_Cases)
-## Messed around by adding rename, group_by, and summarise to the string and filter functions.  Now it looks better for left_join
+#### Messed around by adding rename, group_by, and summarise to the string and filter functions.  Now it looks better for left_join
 
 SEMO_counties <- SEMO_county_pop %>% 
   mutate(`County`=str_replace(`County`,"De Kalb", "DeKalb"),
@@ -110,9 +109,57 @@ view(MO_CoVid_with_SEMO)
 
 MO_CoVid_with_SEMO %>% 
   ggplot()+
-  geom_line(aes(x=date,y=total_confirmed,color=County))+
+  geom_line(aes(x=date,y=total_confirmed,color=County),size=0.6)+
   labs(x=NULL,y="Total Confirmed Cases")+
   gghighlight(`2019`>=200,use_direct_label = FALSE)+
-  scale_x_date(date_labels = "%d %b")
+  scale_x_date(date_labels = "%d %b")+ 
+  theme_test()
   
-#### Was really confused by scale_x_date...
+#### Was really confused by scale_x_date..., messed around with size font but still looks jaggedy
+##Done
+
+# Plot 3 ------------------------------------------------------------------
+CoVid_Months <- covid_positive %>% 
+  filter(date%in%c(ymd("2020-04-01"):ymd("2020-04-30"),
+                   ymd("2020-07-01"):ymd("2020-07-30"))) %>% 
+  mutate(Month=month(date,label=TRUE,abbr = FALSE)) %>% 
+  group_by(`State`,`County Name`,Month) %>% 
+  summarise(total_cases_by_county=sum(cases,na.rm=TRUE)) %>% 
+  left_join(covid_county_pop) %>% 
+  mutate(case_rate=total_cases_by_county/population*100000) %>% 
+  arrange(case_rate)
+view(CoVid_Months)
+  
+sum(total_cases_by_county)  
+view(CoVid_Months)
+
+
+CoVid_Months%>% 
+  ggplot(aes(x=reorder(case_rate,Month),y=State,shape=Month))+
+  geom_line(color="black")+
+  geom_point(aes(shape=Month),size=0.5)+
+  labs(x="COVID-19 cases(per 100,000) for April (squares) and July(circles)",y= NULL)+
+  theme_minimal()  
+
+
+
+
+
+# Plot 4 ------------------------------------------------------------------
+MO_CoVid_Cases <- covid_positive %>% 
+  filter(State=="MO",date>=dmy(first_MO_case)) %>% 
+  mutate(`County Name`=str_replace(`County Name`," County$",""),
+         `County Name`=str_replace(`County Name`,"^Jackson ","")) %>% 
+  group_by(`County Name`,date) %>% 
+  summarise(total_confirmed=sum(cases,na.rm=TRUE),.groups='drop') %>% 
+  rename("County"=`County Name`) %>% 
+  mutate(County=str_replace())
+view(MO_CoVid_Cases)
+
+
+daily <- function(vector, na.rm = FALSE)     {
+  ifelse(na.rm, vector <-
+           na.omit(vector),
+         vector)
+  (sd(vector) / sqrt(length(vector)))
+}                    
