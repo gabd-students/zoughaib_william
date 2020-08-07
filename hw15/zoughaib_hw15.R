@@ -23,7 +23,13 @@ South_FIPS <- c(10,11,12,13,24,37,45,51,54,1,21,28,47,5,22,40,48)
 West_FIPS <- c(4,8,16,35,30,49,32,56,2,6,15,41,53)
 
 # Functions ---------------------------------------------------------------
-
+#### For Plot 4
+new_cases <- function(args) {
+  length_args <- length(args) 
+  day_before <- c(0, args[1:length_args - 1])
+  diff <- args - day_before
+  return(diff)
+}         
 
 
 
@@ -150,16 +156,29 @@ MO_CoVid_Cases <- covid_positive %>%
   filter(State=="MO",date>=dmy(first_MO_case)) %>% 
   mutate(`County Name`=str_replace(`County Name`," County$",""),
          `County Name`=str_replace(`County Name`,"^Jackson ","")) %>% 
-  group_by(`County Name`,date) %>% 
+  group_by(date) %>% 
   summarise(total_confirmed=sum(cases,na.rm=TRUE),.groups='drop') %>% 
-  rename("County"=`County Name`) %>% 
-  mutate(County=str_replace())
+  mutate(daily=new_cases(`total_confirmed`)) 
 view(MO_CoVid_Cases)
 
+MO_CoVid_Cases$roll_mean <- 
+  data.table::frollmean(MO_CoVid_Cases$daily,7,align="right") %>% 
+  replace_na(0)
 
-daily <- function(vector, na.rm = FALSE)     {
-  ifelse(na.rm, vector <-
-           na.omit(vector),
-         vector)
-  (sd(vector) / sqrt(length(vector)))
-}                    
+MO_CoVid_Cases %>% 
+  ggplot(aes(x=date,y=daily))+
+  geom_col(color="grey55",fill="grey85")+
+  geom_line(aes(x=date,y=roll_mean),
+            color="#9D2235",
+            size=0.60)+
+  geom_col(data=filter(MO_CoVid_Cases,date == dmy("16 June 2020")),
+                                mapping = aes(x = date, y = daily),
+                                color = "gray85",
+                                fill = "#C8102E")+
+  scale_x_date(date_labels = "%b%d",
+               date_breaks = "2 weeks")+
+  theme_test()+
+  annotate(geom="text",x=mdy("Jun 16 2020"),y=228,label="Missouri reopened\n16 June 2020",color="#C8102E",fill="C8102E")+
+  labs(x=NULL,y="Daily New Cases")
+
+
