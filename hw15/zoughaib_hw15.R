@@ -41,7 +41,7 @@ covid_positive <- raw_covid_confirmed %>%
   pivot_longer(c(`1/22/20`:`7/31/20`),names_to="date",values_to="cases") %>% 
   mutate(date=mdy(date)) %>% 
   filter(date>=dmy(first_US_case))
-covid_positive
+view(covid_positive)
 #### covid_deaths 
 raw_covid_deaths <- read_csv(here::here("data","covid_deaths_usafacts.csv"))
 covid_deaths <- raw_covid_deaths %>% 
@@ -125,32 +125,67 @@ MO_CoVid_with_SEMO %>%
 ##Done
 
 # Plot 3 ------------------------------------------------------------------
-CoVid_Months <- covid_positive %>% 
-  filter(date%in%c(ymd("2020-04-01"):ymd("2020-04-30"),
-                   ymd("2020-07-01"):ymd("2020-07-30"))) %>% 
-  mutate(Month=month(date,label=TRUE,abbr = FALSE)) %>% 
-  group_by(`State`,`County Name`,Month) %>% 
-  summarise(total_cases_by_county=sum(cases,na.rm=TRUE)) %>% 
-  left_join(covid_county_pop) %>% 
-  mutate(case_rate=total_cases_by_county/population*100000) %>% 
-  arrange(case_rate)
-view(CoVid_Months)
+CoVid_A<- covid_positive %>% 
+  filter(date%in%c(ymd("2020-04-01"),ymd("2020-07-01"))) %>% 
+  rename(cases_first=cases,date_first=date) %>% 
+  group_by(State,date_first) %>% 
+  summarise(cases_first=sum(cases_first)) 
+   
+
+CoA <- CoVid_A %>% 
+  filter(date_first==ymd("2020-04-01"))
+CoB <- CoVid_A %>% 
+  filter(date_first==ymd("2020-07-01"))
+
+CoVid_B <- covid_positive %>% 
+  filter(date%in%c(ymd("2020-04-30"),ymd("2020-07-30"))) %>% 
+  rename(cases_last=cases,date_last=date) %>% 
+  group_by(State,date_last) %>% 
+  summarise(cases_last=sum(cases_last)) 
+
+CoVA <- CoVid_B %>% 
+  filter(date_last==ymd("2020-04-30"))
+CoVB <- CoVid_B %>% 
+  filter(date_last==ymd("2020-07-30"))
   
-sum(total_cases_by_county)  
-view(CoVid_Months)
+CoVid_pop <- covid_county_pop %>% 
+  group_by(State) %>% 
+  summarise(population=sum(population))
 
 
-CoVid_Months%>% 
-  ggplot(aes(x=reorder(case_rate,Month),y=State,shape=Month))+
-  geom_line(color="black")+
-  geom_point(aes(shape=Month),size=0.5)+
-  labs(x="COVID-19 cases(per 100,000) for April (squares) and July(circles)",y= NULL)+
-  theme_minimal()  
+CoVid_last <- left_join(CoVB,CoB) %>% 
+  mutate(new_cases=cases_last-cases_first) %>% 
+  left_join(CoVid_pop) %>% 
+  mutate(case_rate=(new_cases/population)*100000) %>% 
+  arrange(case_rate)
+order_states <- CoVid_last$State
+order_states <- factor(order_states,ordered=TRUE)
+CoVid_first <- left_join(CoVA,CoA) %>% 
+  mutate(new_cases=cases_last-cases_first) %>% 
+  left_join(CoVid_pop) %>% 
+  mutate(case_rate=(new_cases/population)*100000) %>% 
+  arrange(case_rate)
+Overall_CoVid <- CoVid_first %>% 
+  rbind(CoVid_last) %>% 
+  mutate(Month=month(date_first,label=TRUE,abbr=TRUE),
+         State=factor(State,ordered = TRUE,levels=order_states)) %>% 
+  select(Month,State,case_rate)
+view(Overall_CoVid)
 
-
-
-
-
+Overall_CoVid %>% 
+  ggplot(aes(x=State,y=case_rate),group=State) +
+  geom_line(color="grey66")+
+  geom_point(aes(fill=Month,shape=Month),size=1.5)+
+  coord_flip()+
+  scale_shape_manual(values=c(23:24))+
+  scale_fill_brewer(palette = "Dark2")+
+  theme_minimal()+
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())+
+  labs(x=NULL,y="COVID-19 cases (per 100,000) for|nApril(squares) & July(circles)")
+#### I would like to credit this to Afreen.  She finally figured it out as we had been communicating a bit via GroupMe.  
+#### I literally started this on Tuesday, glad I did not start this afternoon and make it really last minute.....
 # Plot 4 ------------------------------------------------------------------
 MO_CoVid_Cases <- covid_positive %>% 
   filter(State=="MO",date>=dmy(first_MO_case)) %>% 
@@ -172,13 +207,48 @@ MO_CoVid_Cases %>%
             color="#9D2235",
             size=0.60)+
   geom_col(data=filter(MO_CoVid_Cases,date == dmy("16 June 2020")),
-                                mapping = aes(x = date, y = daily),
-                                color = "gray85",
-                                fill = "#C8102E")+
+           mapping = aes(x = date, y = daily),
+           color = "gray85",
+           fill = "#C8102E")+
   scale_x_date(date_labels = "%b%d",
                date_breaks = "2 weeks")+
   theme_test()+
   annotate(geom="text",x=mdy("Jun 16 2020"),y=228,label="Missouri reopened\n16 June 2020",color="#C8102E",fill="C8102E")+
   labs(x=NULL,y="Daily New Cases")
+#### I cant figure out how to adjust the annotation.  I tried hjust and vjust.  
+
+# Plot 5 ------------------------------------------------------------------
+CoVid_death_rate <- covid_deaths %>% left_join(covid_positive) %>% 
+  filter(date==mdy("July 31,2020")) %>% 
+  group_by(State) %>% 
+  summarise(`Total Deaths`=sum(deaths,na.rm=TRUE),
+            `Total Cases`=sum(cases,na.rm=TRUE),.groups='drop') %>% 
+  mutate("Death rate (%)"=`Total Deaths`/`Total Cases`*100)
+view(CoVid_death_rate)
+CoVid_Table <- CoVid_death_rate %>% 
+                     filter(`Death rate (%)` >= 5) %>% 
+                     arrange(desc(`Death rate %`))
+CoVid_Table
+
+states <- st_read(here::here("data/shape_files","cb_2017_us_state_500k.shp"),stringsAsFactors = TRUE)
+states_CoVid <- states %>%
+  dplyr::filter(NAME %in% lower_48) %>%
+  rename(State= STUSPS)
+states_CoVid_all <- left_join(states_CoVid,CoVid_death_rate)  
 
 
+library(RColorBrewer)
+states_CoVid_all %>% 
+ggplot()+
+  geom_sf(aes(fill=`Death rate (%)`))+
+  scale_fill_viridis_c(name="COVID-19 Death rate,\n% of confirmed cases",
+                       option="inferno")+
+  coord_sf(crs=st_crs(5070))+
+  theme_bw()+
+  theme(legend.position = "bottom")
+
+#### FINALLY FINISHED WITH PLOT 5 (MY VERSION) EVEN THOUGH I DID NOT NEED TO DO IT...
+
+
+
+## THE END
